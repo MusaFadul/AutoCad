@@ -58,7 +58,7 @@ public class PolylineItem extends Feature {
         // Grab the first coordinate of the line only on the first pass.
         // Keep grabbing the second coordinate after that to get all the vertices.
         for (int i=0; i<this.geometry.size(); i++) {
-            if (i==1) {
+            if (i==0) {
                 x[i] = this.geometry.get(i).getX1();
                 y[i] = this.geometry.get(i).getY1();
             }

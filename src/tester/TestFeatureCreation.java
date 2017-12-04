@@ -116,8 +116,8 @@ public class TestFeatureCreation {
 
         ArrayList<Line2D.Double> myUpdatedArrayList = new ArrayList<Line2D.Double>();
 
-        Line2D.Double myUpdatedLine2D = new Line2D.Double(0,0,2,2);
-        myUpdatedArrayList.add(myLine2D);
+        Line2D.Double myUpdatedLine2D = new Line2D.Double(1,1,2,2);
+        myUpdatedArrayList.add(myUpdatedLine2D);
 
         Line2D.Double myUpdatedLine2D_2 = new Line2D.Double(2,2,4,4);
         myUpdatedArrayList.add(myUpdatedLine2D_2);
