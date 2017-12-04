@@ -2,26 +2,21 @@
  * 
  */
 package core_classes;
-import java.awt.Color;
 
 /**
- * @author OlumideEnoch
- *
+ * @author Isaac
+ * Abstract class for storing Features as the same type, so that they may be put into Layers.
  */
 public abstract class Feature {
 
-    private int id;
-    private Color color;
-    private int weight;
+    protected int id;
 
     /**
-     * Abstract constructor for Feature object.  Requires an id, a color and a weight.
-     * @return
+     * Constructor for making feature object
+     * @param id
      */
-    public void Feature(int id, Color color, int weight) {
+    public Feature(int id) {
         this.id = id;
-        this.color = color;
-        this.weight = weight;
     }
 
     /**
@@ -30,22 +25,6 @@ public abstract class Feature {
      */
     public int getId() {
         return this.id;
-    }
-
-    /**
-     * Getter method for the color of this feature.
-     * @return Color
-     */
-    public Color getColor() {
-        return this.color;
-    }
-
-    /**
-     * Getter method for the weight of this feature.
-     * @return int
-     */
-    public int getWeight() {
-        return this.weight;
     }
 
 }
