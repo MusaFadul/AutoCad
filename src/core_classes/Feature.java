@@ -27,4 +27,8 @@ public abstract class Feature {
         return this.id;
     }
 
+    public double[][] getArray() {
+        return new double[][] {};
+    }
+
 }
