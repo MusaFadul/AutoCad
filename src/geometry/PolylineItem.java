@@ -11,4 +11,8 @@ import core_classes.Feature;
  */
 public class PolylineItem extends Feature {
 
+	public PolylineItem(int id) {
+		super(id);
+	}
+
 }

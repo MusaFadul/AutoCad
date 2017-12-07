@@ -11,4 +11,13 @@ import core_classes.Feature;
  */
 public class LineItem extends Feature {
 
+	public LineItem(int id) {
+		super(id);
+		// TODO Auto-generated constructor stub
+	}
+	
+	
+	
+	
+	
 }
