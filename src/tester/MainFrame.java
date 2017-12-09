@@ -4,9 +4,7 @@
 package tester;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -43,10 +41,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JLabel;
@@ -115,8 +111,6 @@ public class MainFrame extends CustomJFrame {
 	
 	/**Draw button group*/
 	public static ButtonGroup drawButtonGroup = new ButtonGroup();
-	
-	private static Timer timer;
 	
 	private static JButton btnNewButton;
 	

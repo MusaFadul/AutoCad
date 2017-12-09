@@ -67,32 +67,4 @@ public class PolylineItem extends Feature {
         this.geometry = polyline;
     }
 
-    /**
-     * Getter method that returns the geometry in a standardized pair of arrays format for storage in the DB.
-     * @return double[][] containting an x array and a y array, in that order.
-     */
-    @Override
-    public double[][] getArray() {
-
-        // Initialize the arrays to be the same length as the ArrayList + 1 (a polyline has n+1 vertices where n = number of line segments)
-        double[] x = new double[this.geometry.size()+1];
-        double[] y = new double[this.geometry.size()+1];
-
-        // Iterate through the array list and get each coordinate pair.
-        // Grab the first coordinate of the line only on the first pass.
-        // Keep grabbing the second coordinate after that to get all the vertices.
-        for (int i=0; i<this.geometry.size(); i++) {
-            if (i==0) {
-                x[i] = this.geometry.get(i).getX1();
-                y[i] = this.geometry.get(i).getY1();
-            }
-            x[i+1] = this.geometry.get(i).getX2();
-            y[i+1] = this.geometry.get(i).getY2();
-        }
-
-        // Pack the x and y arrays into one array and return it.
-        return new double[][] {x, y};
-
-    }
-
 }
