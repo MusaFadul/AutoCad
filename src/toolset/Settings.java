@@ -26,8 +26,8 @@ public class Settings {
 	public static int cursorSize = 25;
 	public static Color cursorColor = new Color(244, 98, 66);
 	public static Color defaultColor = Color.BLACK;
-	public static Color DEFAULT_BUTTON_COLOR = new Color(31, 105, 224);
-	public static Color DEFAULT_STATE_COLOR = new Color(239, 66, 14);
+	public static Color DEFAULT_STATE_COLOR = new Color(31, 105, 224);
+	public static Color HIGHLIGHTED_STATE_COLOR = new Color(239, 66, 14);
 	
 	// GUI parameters
 	public static final ImageIcon LAYER_DELETE_ICON = Tools.getIconImage("/images/bin.png", 15, 15);
@@ -35,5 +35,14 @@ public class Settings {
 	public static final Color DEFAULT_VERTIX_COLOR = new Color(31, 105, 224);
 	public static final String DRAW_CONTINUE = "continue";
 	public static final String CLOSE_POLYGON_MESSAGE = "Click point to close the polygon. Turn on the snap for precise drawing";
+	public static final String CLOSE_POLYLINE_MESSAGE = "Click first or last point to close polyline";
+
+	public static final String POLYLINE_GEOMETRY = "Polyline";
+	public static final String POINT_GEOMETRY = "Point";
+	public static final String POLYGON_GEOMETRY = "Polygon";
+
+	public static final Color MUTE_STATE_COLOR = Color.LIGHT_GRAY;
+
+	public static final Color FEATURE_CREATED_COLOR = new Color (16, 91, 26);
 
 }

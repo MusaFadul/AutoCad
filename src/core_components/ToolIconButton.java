@@ -26,7 +26,7 @@ public class ToolIconButton extends JButton {
 	public ToolIconButton(String text, String iconPath, int x, int y) {
 		
 		super(text);
-		setBackground(Settings.DEFAULT_BUTTON_COLOR);
+		setBackground(Settings.DEFAULT_STATE_COLOR);
 		setBorderPainted(false);
 		setFocusPainted(false);
 		setIcon(Tools.getIconImage(iconPath, x,y));
@@ -52,7 +52,7 @@ public class ToolIconButton extends JButton {
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
 				super.mouseEntered(e);
-				setBackground(Settings.DEFAULT_STATE_COLOR);
+				setBackground(Settings.HIGHLIGHTED_STATE_COLOR);
 			}
 			
 			@Override
@@ -60,7 +60,7 @@ public class ToolIconButton extends JButton {
 				// TODO Auto-generated method stub
 				super.mouseExited(e);
 				if(!buttonReleased) {
-					setBackground(Settings.DEFAULT_BUTTON_COLOR);
+					setBackground(Settings.DEFAULT_STATE_COLOR);
 				}
 			}
 		});

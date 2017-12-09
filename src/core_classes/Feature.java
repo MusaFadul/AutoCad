@@ -17,6 +17,7 @@ public class Feature {
     protected int id;
     protected Shape shape;
     protected List<Rectangle2D> vertices = new ArrayList<Rectangle2D> ();
+    protected String featureType;
 
     /**
      * Constructor for making feature object
@@ -64,5 +65,19 @@ public class Feature {
 	 */
 	public void setShape(Shape shape) {
 		this.shape = shape;
+	}
+
+	/**
+	 * @return the featureType
+	 */
+	public String getFeatureType() {
+		return featureType;
+	}
+
+	/**
+	 * @param featureType the featureType to set
+	 */
+	public void setFeatureType(String featureType) {
+		this.featureType = featureType;
 	}
 }

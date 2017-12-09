@@ -1,11 +1,13 @@
 package features;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 
 public class TextItem {
 	
 	private Point2D basePosition;
 	private String text;
+	private Color color;
 	/**
 	 * @param basePosition
 	 * @param text
@@ -39,8 +41,17 @@ public class TextItem {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
-	
-	
+	/**
+	 * @return the color
+	 */
+	public Color getColor() {
+		return color;
+	}
+	/**
+	 * @param color the color to set
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
 }
