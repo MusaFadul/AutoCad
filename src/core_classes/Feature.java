@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+<<<<<<< HEAD
  * @author OlumideEnoch
+=======
+ * @author Isaac
+>>>>>>> 6ffccaecdd878b743b1980c68714807e148bdff7
  * Abstract class for storing Features as the same type, so that they may be put into Layers.
  */
 public class Feature {
@@ -141,4 +145,30 @@ public class Feature {
 		return radiusY;
 	}
 
+<<<<<<< HEAD
 }
+=======
+    protected int id;
+
+    /**
+     * Constructor for making feature object
+     * @param id
+     */
+    public Feature(int id) {
+        this.id = id;
+    }
+
+    /**
+     * Getter method for the id of this feature.
+     * @return int
+     */
+    public int getId() {
+        return this.id;
+    }
+
+    public double[][] getArray() {
+        return new double[][] {};
+    }
+
+}
+>>>>>>> 6ffccaecdd878b743b1980c68714807e148bdff7
