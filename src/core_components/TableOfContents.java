@@ -12,7 +12,13 @@ import renderers.GeometryTableIconRenderer;
 import tester.MainFrame;
 
 /**
+ * Arranges the list of current layers <br>
+ * It can: <br>
+ * Turn off and on layer <br>
+ * Remove layer and <br>
+ * Change the color of a layer.
  * 
+ * TODO Conclude the listener at the first column (visibility)
  * @author OlumideEnoch
  *
  */
@@ -207,6 +213,13 @@ public class TableOfContents extends JTable  {
 			
 			// Change the operation message to success
 			message = layer.getLayerName() + " removed";
+			
+			// Disable edit mode
+			if(tableModel.getRowCount() == 0) {
+				
+				MainFrame.panel.abandonEditSession();
+				MainFrame.updateDrawButtonGroup();
+			}
 			
 		} else {
 			

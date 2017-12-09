@@ -112,6 +112,8 @@ public class MainFrame extends CustomJFrame {
 	
 	private static JButton btnNewButton;
 	
+	private static ToolIconButton btnDrawEdit;
+	
 	
 	
 	/**
@@ -247,7 +249,7 @@ public class MainFrame extends CustomJFrame {
 		editorRibbon.add(btnDelete);
 		btnDelete.setToolTipText("Delete selected items");
 		
-		ToolIconButton btnDrawEdit = new ToolIconButton("Editing", "/images/edit.png", 60,60);
+		btnDrawEdit = new ToolIconButton("Editing", "/images/edit.png", 60,60);
 		btnDrawEdit.setBounds(110, 22, 90, 75);
 		editorRibbon.add(btnDrawEdit);
 		btnDrawEdit.setToolTipText("Start edit session");
@@ -482,8 +484,7 @@ public class MainFrame extends CustomJFrame {
 					
 						button.setEnabled(true);
 					}
-					
-					
+
 		        }
 			} 
 			
@@ -491,7 +492,23 @@ public class MainFrame extends CustomJFrame {
 				
 				log("Error, layer not found with the current index!, something went wrong !");
 			}	
-		}	
+		} 
+		
+		else {
+			
+			// If layer list is empty
+			// Disable all draw buttons
+			for (Enumeration<AbstractButton> buttons = drawButtonGroup.getElements(); buttons.hasMoreElements();) {
+				DrawIconButton button = (DrawIconButton) buttons.nextElement();
+				button.setEnabled(false);
+			}
+			
+			// Disable the edit start button
+			btnDrawEdit.setButtonReleased(false);
+			btnDrawEdit.setBackground(Settings.DEFAULT_STATE_COLOR);
+			
+		}
+			
 	}
 
 	/**

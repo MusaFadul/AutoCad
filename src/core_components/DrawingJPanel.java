@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -100,8 +101,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	/**Moving hint*/
 	private static TextItem movingHint = null;
 	
-	private static int countTime;
-	private static Timer t, fadetimer;
+	private static int animatorTime;
+	private static Timer timer, fadetimer;
 	
 
 	/**
@@ -111,13 +112,13 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	public DrawingJPanel(Rectangle rectangle ) {
 		
 		super();
+		
 		setBounds(rectangle);
-		renderGrid(Settings.gridSizeMM);
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		
+		renderGrid(Settings.gridSizeMM);
 		showAnimatedHint("Welcome", Settings.DEFAULT_STATE_COLOR);
-		
 		
 	}
 
@@ -280,6 +281,401 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	}
 
 	/**
+	 * Turns the grid on and off
+	 */
+	public void toggleGrid() {
+		
+		if(!(this.gridLines.isEmpty())) {
+			
+			this.gridLines.clear();
+			this.gridSnapPoints.clear();
+			this.snapPoint = null;
+			this.gridIsOn  = false;
+			repaint();
+			
+		} else if (this.gridLines.isEmpty()) {
+			
+			this.gridIsOn = true;
+			renderGrid(Settings.gridSizeMM);
+			repaint();
+		}
+		
+	}
+	
+	/**
+	 * Turns snapping on and off
+	 */
+	public void toggleSnap() {
+		
+		if(snappingModeIsOn) {
+			snappingModeIsOn = false;
+		} else {
+			snappingModeIsOn = true;
+		}
+		
+	}
+	
+	/**
+	 * Toggles the edit session 
+	 * @param layerIndex the index of the layer on the table of contents or from the combo box
+	 * @param featureType the current feature type to draw
+	 * @param signal specify not to toggle edit session but to current editing layer by using "continue"
+	 */
+	public void toggleEditStart(int layerIndex, String featureType, String signal) {
+		
+		// Change the current editing layer and feature type
+		int layerID = (int) MainFrame.tableOfContents.getModel().getValueAt(layerIndex, TableOfContents.LAYER_ID_COL_INDEX);
+		currentLayer = TableOfContents.findLayerWithID(layerID);
+		currentFeatureType = featureType;
+		
+		if(signal == null) {
+			signal = "";
+		}
+		
+		// Turn off or on when the signal is to continue editing
+		if(!signal.equals(Settings.DRAW_CONTINUE)) {
+			
+			if(this.editModeIsOn) {
+				editModeIsOn = false;
+				
+				showAnimatedHint("Edit session turned off", Settings.HIGHLIGHTED_STATE_COLOR);
+			} else {
+				editModeIsOn = true;
+				
+				this.vertexList.clear();
+				
+				showAnimatedHint("Edit session turned on", Settings.DEFAULT_STATE_COLOR);
+				
+				// Update draw buttons
+				MainFrame.updateDrawButtonGroup();
+			}
+		}
+	}
+	
+	/**
+	 * Abandons current drawing session
+	 */
+	public void abandonEditSession() {
+		
+		cleanUpDrawing();
+		
+		if(editModeIsOn) {
+			editModeIsOn = false;
+		}
+	}
+	
+	private void handleDrawingRectangle(MouseEvent e) {
+		
+		if(this.vertexList.size() == 1) {
+			
+			for(Rectangle2D item : this.gridSnapPoints) {
+				if(item.contains(e.getPoint())) {
+					snapPoint = item;
+					repaint();
+					break;
+				}
+			}
+			
+			Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
+			Point2D m = e.getPoint();
+			
+			double x = m.getX();
+			double y = m.getY();
+			
+			double width = Math.abs(m.getX() - b.getX());
+			double height =  Math.abs(m.getY() - b.getY());
+			
+			if(b.getX() < m.getX()) {
+				x = b.getX();
+			}
+			
+			if(b.getY() < m.getY()) {
+				y = b.getY();
+			}
+			
+			this.tempShape = new Rectangle2D.Double(x, y, width, height);
+
+			repaint();
+		} 
+		
+	}
+
+	private void handleDrawingCircle(MouseEvent e) {
+
+		if(this.vertexList.size() == 1) {
+		
+			// (a) The center point will be the first point in the vertex list
+			Point2D centerPoint = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
+			
+			// (b) The radius of the circle will be the distance from the center point to the currently moving mouse point
+			double radius = (e.getPoint().distance(centerPoint));
+			
+			// (c) Construct circle with the parameters
+			Shape circleShape = new Ellipse2D.Double(centerPoint.getX() - radius, centerPoint.getY() - radius , radius * 2, radius* 2);
+			
+			// (d) Display temporary cirlce
+			tempShape = circleShape;
+			repaint();
+			
+		}
+	}
+
+	private void handleDrawingTriangle(MouseEvent e) {
+
+		Path2D path = new Path2D.Double();
+		
+		if(this.vertexList.size() == 2) {
+			
+			path.moveTo(vertexList.get(0).getCenterX(), vertexList.get(0).getCenterY());
+			
+			path.lineTo(vertexList.get(1).getCenterX(), vertexList.get(1).getCenterY());
+			
+			path.lineTo(e.getPoint().getX(), e.getPoint().getY());
+			
+			path.closePath();
+			
+			this.tempShape = path;
+			
+			repaint();
+		}
+	}
+
+	/**
+	 * Closing protocol for drawing polygons
+	 * For situation where the snap or grid is turned off and user needs to close a polygon
+	 * @param e
+	 */
+	private void handleDrawingClosingProtocol(MouseEvent e) {
+		
+		// 0. Only perform protocol if the edit mode is on
+		// ------------------------------------------------
+		if(this.editModeIsOn) {
+			
+			// 1. For Polygons
+			// ------------------------------------------------
+			if(MainFrame.getCurrentFeatureType() != null) {
+					
+				if(MainFrame.getCurrentFeatureType().equals("Hexagon")) {
+
+				// 1.1 Ensure that at least one point have been drawn
+				// ------------------------------------------------
+				if(this.vertexList.size() > 0) {
+					
+					// 1.2 Then test for the first point
+					// ------------------------------------------------
+					if(this.vertexList.get(0).contains(e.getPoint())) {
+						
+						// 1.3 If mouse is on the first point, then snap the mouse to the first point
+						// ------------------------------------------------
+						this.snapPoint = this.vertexList.get(0);
+						
+						// 1.4 Show some tool tip
+						// ------------------------------------------------
+						this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYGON_MESSAGE);
+						repaint();
+						
+					} else {
+						
+						// 1.5 Erase the snap and the tool tip if mouse goes away
+						// ------------------------------------------------
+						this.snapPoint = null;
+						this.tooltip = null;
+						repaint();
+					}
+				}
+			}
+			}
+			
+			// 2. For polylines
+			/// ------------------------------------------------
+			if(currentLayer.getLayerType() == Settings.POLYLINE_GEOMETRY) {
+
+				// 2.1 Ensure that at least one point have been drawn
+				// ------------------------------------------------
+				if(this.vertexList.size() > 0) {
+					
+					// 2.2 Get first and last vertex of the polyline
+					// ------------------------------------------------
+					Rectangle2D firstVertex = vertexList.get(0);
+					Rectangle2D lastVertex = vertexList.get( vertexList.size() - 1 );
+					
+					// 2.2 Test if the mouse is on it
+					// ------------------------------------------------
+					if( firstVertex.contains(e.getPoint()) || lastVertex.contains(e.getPoint()) ) {
+						
+						// 2.3 Show some tips
+						// ------------------------------------------------
+						this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYLINE_MESSAGE);
+						repaint();
+						
+					} 
+					else {
+						// 2.4 Erase the snap and the tool tip if mouse goes away
+						// ------------------------------------------------
+						this.snapPoint = null;
+						this.tooltip = null;
+						repaint();
+					}
+				}
+			}
+			
+			
+		}
+	}
+
+	/**
+	 * Shows temporary polygon on the panel while drawing
+	 * 
+	 * @param pointList current list of points, should be more than 3!
+	 */
+	private void showTempPolygon (List<Rectangle2D> pointList) {
+		
+		if(pointList.size() > 2) {
+			
+			// Construct a new (open) path
+			Path2D path = new Path2D.Double();
+			
+			// Start at the first item on the list
+			path.moveTo(pointList.get(0).getCenterX(), pointList.get(0).getCenterY());
+			
+			// Connect other points
+			for(Rectangle2D vertex : pointList) {
+				path.lineTo(vertex.getCenterX(), vertex.getCenterY());
+			}
+			// Close the path
+			path.closePath();
+			
+			tempShape = path;
+			
+			// Render
+			repaint();
+		}	
+	}
+	
+	/**
+	 * Finish drawing of a path, if the current layer is a polygon, the path will be closed and filled<br>
+	 * Creates a new feature in the current layer<br>
+	 * @param pointList pointList current list of points, should be more than 3!
+	 */
+	private void finishPath(List<Rectangle2D> pointList) {
+		
+		// Construct a new (open) path
+		Path2D path = new Path2D.Double();
+		
+		// Start at the first item on the list
+		path.moveTo(pointList.get(0).getCenterX(), pointList.get(0).getCenterY());
+		
+		// Create a new feature with an ID
+		PolygonItem featurePolygon = new PolygonItem(featureID++, path);
+		
+		// Connect the path and add all the vertices to the feature
+		for(Rectangle2D vertex : pointList) {
+			path.lineTo(vertex.getCenterX(), vertex.getCenterY());
+			featurePolygon.getVertices().add(vertex);
+		}
+		
+		// Close path , if the current layer is a polygon
+		if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY)){
+			path.closePath();
+		}
+		
+		// Set the path as the shape of the feature
+		featurePolygon.setShape(path);
+		featurePolygon.setFeatureType(currentFeatureType);
+		
+		// Add to the current list of features in the layer
+		currentLayer.getListOfFeatures().add(featurePolygon);
+		
+		// Change the status of the layer to be unsaved
+		currentLayer.setNotSaved(true);
+		
+		repaint();
+	}
+	
+	private void findSnaps(MouseEvent e) {
+		
+		
+		if(editModeIsOn) {
+			
+			if( MainFrame.getCurrentFeatureType() != null ) {
+				
+			// Handling Rectangle 
+			if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) && MainFrame.getCurrentFeatureType().equals("Rectangle")) {
+				this.handleDrawingRectangle(e);
+			}
+			
+			// Handling Circle 
+			if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) && MainFrame.getCurrentFeatureType().equals("Circle")) {
+				this.handleDrawingCircle(e);
+			}
+			
+			// Handling Triangle 
+			if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) && MainFrame.getCurrentFeatureType().equals("Triangle")) {
+				this.handleDrawingTriangle(e);
+			}
+			
+			if(snappingModeIsOn) {
+				
+				// Check first current mouse is found on the grid snap points
+				for(Rectangle2D item : this.gridSnapPoints) {
+					if(!(item.contains(e.getPoint()))) {
+						this.snapPoint = null;
+						this.repaint();
+						break;
+					}
+				}
+				
+				// Check for if found
+				for(Rectangle2D item : this.gridSnapPoints) {
+					if(item.contains(e.getPoint())) {
+						this.snapPoint = item;
+						this.repaint();
+						//this.handlePolygonClosingProtocol(e);
+						break;
+					}
+				}
+	
+				/*// Check in global snap points
+				for(Rectangle2D item : this.globalDrawingSnapPoints) {
+					if(item.contains(e.getPoint())) {
+						this.snapPoint = item;
+						this.repaint();
+						break;
+					}
+				}
+				
+				// Check in global snap points
+				for(Rectangle2D item : this.globalDrawingSnapPoints) {
+					if(item.contains(e.getPoint())) {
+						this.snapPoint = item;
+						this.repaint();
+						break;
+					} else {
+						this.snapPoint = null;
+						repaint();
+					}
+				}*/
+				
+				//if(!gridIsOn) {
+					this.handleDrawingClosingProtocol(e);
+				//}
+					
+			} else {
+				
+				this.snapPoint = null;
+				
+				//if(this.editModeIsOn) {
+					
+					if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) || currentLayer.getLayerType().equals(Settings.POLYLINE_GEOMETRY)) {
+						this.handleDrawingClosingProtocol(e);
+					}
+				//}
+				}
+			}
+		}	
+	}
+
+	/**
 	 * Renders grid on the drawing panel
 	 * @param gridSizeMM grid size specified in MM
 	 */
@@ -371,283 +767,102 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		repaint();
 		}
 	}
-	
-	/**
-	 * Turns the grid on and off
-	 */
-	public void toggleGrid() {
-		
-		if(!(this.gridLines.isEmpty())) {
-			
-			this.gridLines.clear();
-			this.gridSnapPoints.clear();
-			this.snapPoint = null;
-			this.gridIsOn  = false;
-			repaint();
-			
-		} else if (this.gridLines.isEmpty()) {
-			
-			this.gridIsOn = true;
-			renderGrid(Settings.gridSizeMM);
-			repaint();
-		}
-		
-	}
-	
-	/**
-	 * Turns snapping on and off
-	 */
-	public void toggleSnap() {
-		
-		if(snappingModeIsOn) {
-			snappingModeIsOn = false;
-		} else {
-			snappingModeIsOn = true;
-		}
-		
-	}
-	
-	/**
-	 * Toggles the edit session 
-	 * @param layerIndex the index of the layer on the table of contents or from the combo box
-	 * @param featureType the current feature type to draw
-	 * @param signal specify not to toggle edit session but to current editing layer by using "continue"
-	 */
-	public void toggleEditStart(int layerIndex, String featureType, String signal) {
-		
-		// Change the current editing layer and feature type
-		int layerID = (int) MainFrame.tableOfContents.getModel().getValueAt(layerIndex, TableOfContents.LAYER_ID_COL_INDEX);
-		currentLayer = TableOfContents.findLayerWithID(layerID);
-		currentFeatureType = featureType;
-		
-		if(signal == null) {
-			signal = "";
-		}
-		
-		// Turn off or on when the signal is to continue editing
-		if(!signal.equals(Settings.DRAW_CONTINUE)) {
-			
-			if(this.editModeIsOn) {
-				editModeIsOn = false;
-				
-				showAnimatedHint("Edit session turned off", Settings.HIGHLIGHTED_STATE_COLOR);
-			} else {
-				editModeIsOn = true;
-				
-				this.vertexList.clear();
-				
-				showAnimatedHint("Edit session turned on", Settings.DEFAULT_STATE_COLOR);
-				
-				// Update draw buttons
-				MainFrame.updateDrawButtonGroup();
-			}
-		}
-		
-	}
-	
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
-
-		findSnaps(e);
-
-	}
-
-	private void handleDrawingRectangle(MouseEvent e) {
+	private void cleanUpDrawing() {
 		
-		if(this.vertexList.size() == 1) {
-			
-			for(Rectangle2D item : this.gridSnapPoints) {
-				if(item.contains(e.getPoint())) {
-					snapPoint = item;
-					repaint();
-					break;
-				}
-			}
-			
-			Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
-			Point2D m = e.getPoint();
-			
-			double x = m.getX();
-			double y = m.getY();
-			
-			double width = Math.abs(m.getX() - b.getX());
-			double height =  Math.abs(m.getY() - b.getY());
-			
-			if(b.getX() < m.getX()) {
-				x = b.getX();
-			}
-			
-			if(b.getY() < m.getY()) {
-				y = b.getY();
-			}
-			
-			this.tempShape = new Rectangle2D.Double(x, y, width, height);
-
-			repaint();
-		} 
+		// Clear the vertex list for new polygon
+		this.vertexList.clear();
 		
-	}
-
-	private void findSnaps(MouseEvent e) {
+		// Remove any tool tip on the drawing
+		this.tooltip = null;
 		
+		// Remove the current snap
+		this.snapPoint = null;
 		
-		if(editModeIsOn) {
-			
-			if( MainFrame.getCurrentFeatureType() != null ) {
-				
-			// Handling Rectangle 
-			if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) && MainFrame.getCurrentFeatureType().equals("Rectangle")) {
-				this.handleDrawingRectangle(e);
-			}
+		// Remove temp lines
+		this.tempLine = new ArrayList<Line2D>();
 		
-			if(snappingModeIsOn) {
-				
-				// Check first current mouse is found on the grid snap points
-				for(Rectangle2D item : this.gridSnapPoints) {
-					if(!(item.contains(e.getPoint()))) {
-						this.snapPoint = null;
-						this.repaint();
-						break;
-					}
-				}
-				
-				// Check for if found
-				for(Rectangle2D item : this.gridSnapPoints) {
-					if(item.contains(e.getPoint())) {
-						this.snapPoint = item;
-						this.repaint();
-						//this.handlePolygonClosingProtocol(e);
-						break;
-					}
-				}
-
-				/*// Check in global snap points
-				for(Rectangle2D item : this.globalDrawingSnapPoints) {
-					if(item.contains(e.getPoint())) {
-						this.snapPoint = item;
-						this.repaint();
-						break;
-					}
-				}
-				
-				// Check in global snap points
-				for(Rectangle2D item : this.globalDrawingSnapPoints) {
-					if(item.contains(e.getPoint())) {
-						this.snapPoint = item;
-						this.repaint();
-						break;
-					} else {
-						this.snapPoint = null;
-						repaint();
-					}
-				}*/
-				
-				//if(!gridIsOn) {
-					this.handleDrawingClosingProtocol(e);
-				//}
-					
-			} else {
-				
-				this.snapPoint = null;
-				
-				//if(this.editModeIsOn) {
-					
-					if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) || currentLayer.getLayerType().equals(Settings.POLYLINE_GEOMETRY)) {
-						this.handleDrawingClosingProtocol(e);
-					}
-				//}
-				}
-			}
-		}	
+		// Remove temp shape
+		this.tempShape = null;
+		
+		MainFrame.updateDrawButtonGroup();
+		
+		repaint();
 	}
 
 	/**
-	 * Closing protocol for drawing polygons
-	 * For situation where the snap or grid is turned off and user needs to close a polygon
-	 * @param e
+	 * Shows animated hint on the drawing panel
+	 * @param message Message to display
+	 * @param stateColor State color e.g Settings.LAYER_CREATED_COLOR
 	 */
-	private void handleDrawingClosingProtocol(MouseEvent e) {
+	public void showAnimatedHint(String message, Color stateColor) {
 		
-		// 0. Only perform protocol if the edit mode is on
-		// ------------------------------------------------
-		if(this.editModeIsOn) {
-			
-			// 1. For Polygons
-			// ------------------------------------------------
-			if(MainFrame.getCurrentFeatureType() != null) {
-					
-				if(MainFrame.getCurrentFeatureType().equals("Hexagon")) {
+		animatorTime = 0;
+		movingHint = null;
+		repaint();
+		
+		int x = getWidth();
 
-				// 1.1 Ensure that at least one point have been drawn
-				// ------------------------------------------------
-				if(this.vertexList.size() > 0) {
+		movingHint = new TextItem(new Point2D.Double(x, 0), message);
+		Color c = stateColor;
+		movingHint.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 200));
+		
+		timer = new Timer(5, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				animatorTime++;
+				if(movingHint != null ) {
+					if(animatorTime != 75) {
+						double ya = movingHint.getBasePosition().getY();
+						movingHint.setBasePosition(new Point2D.Double(0, ya + 0.7));
+						repaint();
+					}
 					
-					// 1.2 Then test for the first point
-					// ------------------------------------------------
-					if(this.vertexList.get(0).contains(e.getPoint())) {
+					else  {
 						
-						// 1.3 If mouse is on the first point, then snap the mouse to the first point
-						// ------------------------------------------------
-						this.snapPoint = this.vertexList.get(0);
+						timer.stop();
+						animatorTime = 0;
 						
-						// 1.4 Show some tool tip
-						// ------------------------------------------------
-						this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYGON_MESSAGE);
-						repaint();
+						// Stay for some time and go off
 						
-					} else {
-						
-						// 1.5 Erase the snap and the tool tip if mouse goes away
-						// ------------------------------------------------
-						this.snapPoint = null;
-						this.tooltip = null;
-						repaint();
+						fadetimer = new Timer(10, new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								// TODO Auto-generated method stub
+								animatorTime++;
+								
+								if(movingHint != null) {
+									if(animatorTime > 150) {
+										if(!(movingHint.getColor().getAlpha() < 10)) {
+											Color c = movingHint.getColor();
+											movingHint.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()-2));
+											repaint();
+										} else {
+											movingHint = null;
+											repaint();
+											fadetimer.stop();
+											timer.stop();
+										}
+									}
+								}
+								if(animatorTime == 300) {
+									
+									movingHint = null;
+									repaint();
+									fadetimer.stop();
+									timer.stop();
+								}
+							}
+						});
+						fadetimer.start();
 					}
 				}
 			}
-			}
-			
-			// 2. For polylines
-			/// ------------------------------------------------
-			if(currentLayer.getLayerType() == Settings.POLYLINE_GEOMETRY) {
-
-				// 2.1 Ensure that at least one point have been drawn
-				// ------------------------------------------------
-				if(this.vertexList.size() > 0) {
-					
-					// 2.2 Get first and last vertex of the polyline
-					// ------------------------------------------------
-					Rectangle2D firstVertex = vertexList.get(0);
-					Rectangle2D lastVertex = vertexList.get( vertexList.size() - 1 );
-					
-					// 2.2 Test if the mouse is on it
-					// ------------------------------------------------
-					if( firstVertex.contains(e.getPoint()) || lastVertex.contains(e.getPoint()) ) {
-						
-						// 2.3 Show some tips
-						// ------------------------------------------------
-						this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYLINE_MESSAGE);
-						repaint();
-						
-					} 
-					else {
-						// 2.4 Erase the snap and the tool tip if mouse goes away
-						// ------------------------------------------------
-						this.snapPoint = null;
-						this.tooltip = null;
-						repaint();
-					}
-				}
-			}
-			
-			
-		}
+		});
+		timer.start();
 	}
 
 	/**
@@ -662,13 +877,13 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				
 				// i. Get current point of the mouse 
 				// ----------------------------------
-				Point2D point = e.getPoint();
+				Point2D clickedPoint = e.getPoint();
 				
 				// ii. Replace the point with the snapped point in case snapping is on
 				// -------------------------------------------------------------------
 				if(this.snapPoint != null) {
 					
-					point = new Point2D.Double(this.snapPoint.getCenterX(), this.snapPoint.getCenterY());
+					clickedPoint = new Point2D.Double(this.snapPoint.getCenterX(), this.snapPoint.getCenterY());
 				}
 				
 				//------------------------------------------------------------------------
@@ -687,7 +902,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	
 						// 1. Create a vertex for the new point using the current snap size ( see Settings )
 						// ---------------------------------------------------------------------------------
-						Rectangle2D vertex = new Rectangle2D.Double(point.getX() - (snapSize/2), point.getY() - (snapSize/2), snapSize, snapSize);
+						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
 						
 						// 2. Add the vertex the the current list of vertex and the global snap points
 						// ---------------------------------------------------------------------------------
@@ -714,7 +929,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							
 							// 4.3 If the first point of the polygon was clicked
 							// --------------------------------------------------------------------
-							if(this.vertexList.get(0).getCenterX() == point.getX() && this.vertexList.get(0).getCenterY() == point.getY()) {
+							if(this.vertexList.get(0).getCenterX() == clickedPoint.getX() && this.vertexList.get(0).getCenterY() == clickedPoint.getY()) {
 								
 								// 4.3.1 Close the polygon and create a new feature
 								finishPath(this.vertexList);
@@ -733,12 +948,17 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						}
 					}
 					
+					//--------------------------------------------------------------------
+					//                        RECTANGLE 
+					//                        (2 POINT)
+					//--------------------------------------------------------------------
+					
 					else if (MainFrame.getCurrentFeatureType().equals("Rectangle")) {
 						
 						
 						// 1. Create a vertex for the new point using the current snap size ( see Settings )
 						// ---------------------------------------------------------------------------------
-						Rectangle2D vertex = new Rectangle2D.Double(point.getX() - (snapSize/2), point.getY() - (snapSize/2), snapSize, snapSize);
+						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
 						
 						// 2. Add the vertex the the current list of vertex and the global snap points
 						// ---------------------------------------------------------------------------------
@@ -760,7 +980,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							Feature rectangle = new Feature(featureID++);
 							
 							Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
-							Point2D m = point;
+							Point2D m = clickedPoint;
 							
 							double x = m.getX();
 							double y = m.getY();
@@ -778,7 +998,9 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							
 							rectangle.setShape(new Rectangle2D.Double(x, y, width, height));
 							rectangle.getVertices().addAll(vertexList);
+							rectangle.setFeatureType("Rectangle");
 							currentLayer.getListOfFeatures().add(rectangle);
+							currentLayer.setNotSaved(true);
 							
 							// log messages ();
 							String message = "New rectangle created";
@@ -788,6 +1010,98 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							cleanUpDrawing();
 							repaint ();
 						}
+					} 
+					
+					//--------------------------------------------------------------------
+					//                              CIRCLE 
+					//                        (CENTER - RADIUS)
+					//--------------------------------------------------------------------
+					
+					else if (MainFrame.getCurrentFeatureType().equals("Circle")) {
+						
+						// 1. Create a vertex for the new point using the current snap size ( see Settings )
+						// ---------------------------------------------------------------------------------
+						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
+						
+						// 2. Add the center point
+						// ------------------------
+						if(this.vertexList.isEmpty()) {
+							vertexList.add(vertex);
+						}
+						
+						// 3. If a center point have been added
+						// -------------------------------------
+						else if (this.vertexList.size() == 1) {
+							
+							// 3.1 Get circle parameters
+							
+							// (a) The center point will be the first point in the vertex list
+							Point2D centerPoint = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
+							
+							// (b) The radius of the circle will be the distance from the center point to the clicked point 
+							double radius = (clickedPoint.distance(centerPoint));
+							
+							// 3.2 Construct circle with the parameters
+							Shape circleShape = new Ellipse2D.Double(centerPoint.getX() - radius, centerPoint.getY() - radius , radius * 2, radius* 2);
+							
+							// 3.3 Create a new feature
+							Feature circle = new Feature(featureID++);
+							circle.setVertices(vertexList);
+							circle.setFeatureType("Circle");
+							circle.setShape(circleShape);
+							
+							// 3.4 Add the to current layer list of features
+							currentLayer.getListOfFeatures().add(circle);
+							currentLayer.setNotSaved(true);
+							
+							// 3.5 Log some messages
+							String message = "New Circle created";
+							MainFrame.log(message);
+							showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
+							
+							// 3.6 Clean up the drawing
+							cleanUpDrawing();
+							repaint ();
+							
+						}	
+					}
+					
+					//--------------------------------------------------------------------
+					//                              TRIANGLE 
+					//                         (3 POINT TRIANGLE)
+					//--------------------------------------------------------------------
+					
+					else if (MainFrame.getCurrentFeatureType().equals("Triangle")) {
+						
+						System.out.println("Testing");
+						
+						// 1. Create a vertex for the new point using the current snap size ( see Settings )
+						// ---------------------------------------------------------------------------------
+						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
+						
+						
+						if(this.vertexList.size() <= 1) {
+							
+							this.vertexList.add(vertex);
+							repaint();
+							
+						}
+						
+						else if (this.vertexList.size() == 2) {
+							
+							this.vertexList.add(vertex);
+							finishPath(this.vertexList);
+							
+							// 3.5 Log some messages
+							String message = "Triangle created";
+							MainFrame.log(message);
+							showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
+							
+							// 3.6 Clean up the drawing
+							cleanUpDrawing();
+							repaint ();
+						}
+						
 					}
 				}
 				
@@ -798,7 +1112,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					
 					// 1. Create a vertex for the new point using the current snap size ( see Settings )
 					// ---------------------------------------------------------------------------------
-					Rectangle2D vertex = new Rectangle2D.Double(point.getX() - (snapSize/2), point.getY() - (snapSize/2), snapSize, snapSize);
+					Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
 					
 					// 2. Current size of the drawn vertex
 					// ------------------------------------
@@ -842,7 +1156,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						
 						// 4.2 Check if there is a click or double click on the first and last vertex then close the line
 						// -----------------------------------------------------------------------------------------------
-						if( (firstVertex.contains(point) || lastVertex.contains(point)) || e.getClickCount() > 1) {
+						if( (firstVertex.contains(clickedPoint) || lastVertex.contains(clickedPoint)) || e.getClickCount() > 1) {
 							closed = true;
 							
 							// 4.3 Finish up the line and create a new feature
@@ -892,170 +1206,11 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		}
 	}
 
-	private void cleanUpDrawing() {
-		
-		// Clear the vertex list for new polygon
-		this.vertexList.clear();
-		
-		// Remove any tool tip on the drawing
-		this.tooltip = null;
-		
-		// Remove the current snap
-		this.snapPoint = null;
-		
-		// Remove temp lines
-		this.tempLine = new ArrayList<Line2D>();
-		
-		// Remove temp shape
-		this.tempShape = null;
-		
-		MainFrame.updateDrawButtonGroup();
-		
-		repaint();
-	}
-
-	/**
-	 * Shows temporary polygon on the panel while drawing
-	 * 
-	 * @param pointList current list of points, should be more than 3!
-	 */
-	private void showTempPolygon (List<Rectangle2D> pointList) {
-		
-		if(pointList.size() > 2) {
-			
-			// Construct a new (open) path
-			Path2D path = new Path2D.Double();
-			
-			// Start at the first item on the list
-			path.moveTo(pointList.get(0).getCenterX(), pointList.get(0).getCenterY());
-			
-			// Connect other points
-			for(Rectangle2D vertex : pointList) {
-				path.lineTo(vertex.getCenterX(), vertex.getCenterY());
-			}
-			// Close the path
-			path.closePath();
-			
-			tempShape = path;
-			
-			// Render
-			repaint();
-		}	
-	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
 	
-	/**
-	 * Finish drawing of a path, if the current layer is a polygon, the path will be closed and filled<br>
-	 * Creates a new feature in the current layer<br>
-	 * @param pointList pointList current list of points, should be more than 3!
-	 */
-	private void finishPath(List<Rectangle2D> pointList) {
-		
-		// Construct a new (open) path
-		Path2D path = new Path2D.Double();
-		
-		// Start at the first item on the list
-		path.moveTo(pointList.get(0).getCenterX(), pointList.get(0).getCenterY());
-		
-		// Create a new feature with an ID
-		PolygonItem featurePolygon = new PolygonItem(featureID++, path);
-		
-		// Connect the path and add all the vertices to the feature
-		for(Rectangle2D vertex : pointList) {
-			path.lineTo(vertex.getCenterX(), vertex.getCenterY());
-			featurePolygon.getVertices().add(vertex);
-		}
-		
-		// Close path , if the current layer is a polygon
-		if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY)){
-			path.closePath();
-		}
-		
-		// Set the path as the shape of the feature
-		featurePolygon.setShape(path);
-		featurePolygon.setFeatureType(currentFeatureType);
-		
-		// Add to the current list of features in the layer
-		currentLayer.getListOfFeatures().add(featurePolygon);
-		
-		// Change the status of the layer to be unsaved
-		currentLayer.setNotSaved(true);
-		
-		repaint();
-	}
+		findSnaps(e);
 	
-	/**
-	 * Shows animated hint on the drawing panel
-	 * @param message Message to display
-	 * @param stateColor State color e.g Settings.LAYER_CREATED_COLOR
-	 */
-	public void showAnimatedHint(String message, Color stateColor) {
-		
-		countTime = 0;
-		movingHint = null;
-		repaint();
-		
-		int x = getWidth();
-
-		movingHint = new TextItem(new Point2D.Double(x, 0), message);
-		Color c = stateColor;
-		movingHint.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 200));
-		
-		t = new Timer(5, new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				countTime++;
-				if(movingHint != null ) {
-					if(countTime != 75) {
-						double ya = movingHint.getBasePosition().getY();
-						movingHint.setBasePosition(new Point2D.Double(0, ya + 0.7));
-						repaint();
-					}
-					
-					else  {
-						
-						t.stop();
-						countTime = 0;
-						
-						// Stay for some time and go off
-						
-						fadetimer = new Timer(10, new ActionListener() {
-							
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								// TODO Auto-generated method stub
-								countTime++;
-								
-								if(movingHint != null) {
-									if(countTime > 150) {
-										if(!(movingHint.getColor().getAlpha() < 10)) {
-											Color c = movingHint.getColor();
-											movingHint.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()-2));
-											repaint();
-										} else {
-											movingHint = null;
-											repaint();
-											fadetimer.stop();
-											t.stop();
-										}
-									}
-								}
-								if(countTime == 300) {
-									
-									movingHint = null;
-									repaint();
-									fadetimer.stop();
-									t.stop();
-								}
-							}
-						});
-						fadetimer.start();
-					}
-				}
-			}
-		});
-		t.start();
 	}
 
 	@Override
@@ -1078,6 +1233,12 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
