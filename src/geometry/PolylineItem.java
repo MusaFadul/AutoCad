@@ -3,6 +3,9 @@
  */
 package geometry;
 
+import java.awt.Shape;
+import java.awt.geom.Path2D;
+
 import core_classes.Feature;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -12,6 +15,27 @@ import java.util.ArrayList;
  * Class for representing polylines in our system.  Inherits from Feature.
  */
 public class PolylineItem extends Feature {
+	
+	private Shape shape;
+	
+	public PolylineItem(int id, Path2D shape) {
+		super(id);
+		this.shape = shape;
+	}
+
+	/**
+	 * @return the shape
+	 */
+	public Shape getShape() {
+		return shape;
+	}
+
+	/**
+	 * @param shape the shape to set
+	 */
+	public void setShape(Shape shape) {
+		this.shape = shape;
+	}
 
     ArrayList<Line2D.Double> geometry;
 
@@ -41,34 +65,6 @@ public class PolylineItem extends Feature {
      */
     public void setGeometry(ArrayList<Line2D.Double> polyline) {
         this.geometry = polyline;
-    }
-
-    /**
-     * Getter method that returns the geometry in a standardized pair of arrays format for storage in the DB.
-     * @return double[][] containting an x array and a y array, in that order.
-     */
-    @Override
-    public double[][] getArray() {
-
-        // Initialize the arrays to be the same length as the ArrayList + 1 (a polyline has n+1 vertices where n = number of line segments)
-        double[] x = new double[this.geometry.size()+1];
-        double[] y = new double[this.geometry.size()+1];
-
-        // Iterate through the array list and get each coordinate pair.
-        // Grab the first coordinate of the line only on the first pass.
-        // Keep grabbing the second coordinate after that to get all the vertices.
-        for (int i=0; i<this.geometry.size(); i++) {
-            if (i==0) {
-                x[i] = this.geometry.get(i).getX1();
-                y[i] = this.geometry.get(i).getY1();
-            }
-            x[i+1] = this.geometry.get(i).getX2();
-            y[i+1] = this.geometry.get(i).getY2();
-        }
-
-        // Pack the x and y arrays into one array and return it.
-        return new double[][] {x, y};
-
     }
 
 }

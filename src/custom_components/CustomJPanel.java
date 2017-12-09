@@ -4,14 +4,13 @@
 package custom_components;
 
 import java.awt.LayoutManager;
-
 import javax.swing.JPanel;
 
 /**
  * @author OlumideEnoch
  *
  */
-public class CustomJPanel extends JPanel {
+public class CustomJPanel extends JPanel  {
 
 	/**
 	 * 
@@ -23,6 +22,7 @@ public class CustomJPanel extends JPanel {
 	 */
 	public CustomJPanel() {
 		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
