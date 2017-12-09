@@ -82,9 +82,6 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	
 	/**Feature type, circle, rectangle etc*/
 	public static String currentFeatureType = "";
-	
-	/**Feature ID, must be increased where used e.g. featureID++*/
-	private static int featureID = 0;
 
 	/**Temporary Shapes*/
 	private Shape tempShape = null;
@@ -419,7 +416,11 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param e Mouse event from mouse moved
+	 */
 	private void handleDrawingTriangle(MouseEvent e) {
 
 		Path2D path = new Path2D.Double();
@@ -566,7 +567,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		path.moveTo(pointList.get(0).getCenterX(), pointList.get(0).getCenterY());
 		
 		// Create a new feature with an ID
-		PolygonItem featurePolygon = new PolygonItem(featureID++, path);
+		PolygonItem featurePolygon = new PolygonItem(currentLayer.getNextID(), path);
 		
 		// Connect the path and add all the vertices to the feature
 		for(Rectangle2D vertex : pointList) {
@@ -977,7 +978,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						if (this.vertexList.size() == 2) {
 							
 							// Save the layer
-							Feature rectangle = new Feature(featureID++);
+							Feature rectangle = new Feature(currentLayer.getNextID());
 							
 							Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
 							Point2D m = clickedPoint;
@@ -997,6 +998,18 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							}
 							
 							rectangle.setShape(new Rectangle2D.Double(x, y, width, height));
+							
+							// 
+							Rectangle2D topRight = new Rectangle2D.Double(	vertexList.get(1).getCenterX() - (snapSize / 2),
+																			vertexList.get(0).getCenterY() - (snapSize / 2),
+																			snapSize, snapSize);
+							
+							Rectangle2D bottomLeft = new Rectangle2D.Double(vertexList.get(0).getCenterX() - (snapSize / 2),
+																			vertexList.get(1).getCenterY() - (snapSize / 2),
+																			snapSize, snapSize);
+							vertexList.add(1, topRight);
+							vertexList.add(bottomLeft);
+							
 							rectangle.getVertices().addAll(vertexList);
 							rectangle.setFeatureType("Rectangle");
 							currentLayer.getListOfFeatures().add(rectangle);
@@ -1045,9 +1058,10 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							Shape circleShape = new Ellipse2D.Double(centerPoint.getX() - radius, centerPoint.getY() - radius , radius * 2, radius* 2);
 							
 							// 3.3 Create a new feature
-							Feature circle = new Feature(featureID++);
+							Feature circle = new Feature(currentLayer.getNextID());
 							circle.setVertices(vertexList);
 							circle.setFeatureType("Circle");
+							circle.setEllipse(true, radius, radius);
 							circle.setShape(circleShape);
 							
 							// 3.4 Add the to current layer list of features

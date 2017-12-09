@@ -14,10 +14,17 @@ import java.util.List;
  */
 public class Feature {
 
-    protected int id;
-    protected Shape shape;
-    protected List<Rectangle2D> vertices = new ArrayList<Rectangle2D> ();
-    protected String featureType;
+    private int id;
+    private Shape shape;
+    private List<Rectangle2D> vertices = new ArrayList<Rectangle2D> ();
+    private String featureType;
+    private boolean isEllipse = false;
+    private double radiusX, radiusY;
+    /**
+	 * @return the radiusX
+	 */
+
+	private double[][] coordinatesArrayXY;
 
     /**
      * Constructor for making feature object
@@ -33,10 +40,6 @@ public class Feature {
      */
     public int getId() {
         return this.id;
-    }
-
-    public double[][] getArray() {
-        return new double[][] {};
     }
 
 	/**
@@ -80,4 +83,62 @@ public class Feature {
 	public void setFeatureType(String featureType) {
 		this.featureType = featureType;
 	}
+
+	/**
+	 * @return the isEllipse
+	 */
+	public boolean isEllipse() {
+		return isEllipse;
+	}
+
+	/**
+	 * @param isEllipse the isEllipse to set
+	 */
+	public void setEllipse(boolean isEllipse, double radiusX, double radiusY) {
+		
+		this.radiusX = radiusX;
+		this.radiusY = radiusY;
+		
+		this.isEllipse = isEllipse;
+	}
+
+	/**
+	 * Returns the center coordinates of the feature vertices
+	 * @return the coordinatesArrayXY
+	 */
+	public double[][] getCoordinatesArrayXY() {
+		
+		double[] x = new double[vertices.size()];
+		double[] y = new double[vertices.size()];
+		
+		for (int i = 0 ; i < vertices.size(); i++) {
+			x[i] = vertices.get(i).getCenterX();
+			y[i] = vertices.get(i).getCenterY();
+		}
+		
+		double[][] newCoords = {x, y};
+		
+		coordinatesArrayXY = newCoords;
+		
+		return coordinatesArrayXY;
+	}
+
+	/**
+	 * @param coordinatesArrayXY the coordinatesArrayXY to set
+	 */
+	public void setCoordinatesArrayXY(double[][] coordinatesArrayXY) {
+		this.coordinatesArrayXY = coordinatesArrayXY;
+	}
+	
+	public double getRadiusX() {
+		return radiusX;
+	}
+
+	/**
+	 * @return the radiusY
+	 */
+	public double getRadiusY() {
+		return radiusY;
+	}
+
 }

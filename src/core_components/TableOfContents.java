@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import core_classes.Layer;
 import renderers.LayerRemoveButtonRenderer;
@@ -22,7 +25,7 @@ import tester.MainFrame;
  * @author OlumideEnoch
  *
  */
-public class TableOfContents extends JTable  {
+public class TableOfContents extends JTable {
 	
 	/**
 	 * 
@@ -37,6 +40,9 @@ public class TableOfContents extends JTable  {
 	
 	/**The index of the layer id at the table model*/
 	public static final int LAYER_ID_COL_INDEX = 4;
+	
+	/**The index of the layer id at the table model*/
+	public static final int LAYER_VISIBILTY_COL_INDEX = 0;
 
 	/**The list of layers on the table*/
 	public static List <Layer> layerList = new ArrayList<Layer>();
@@ -50,8 +56,29 @@ public class TableOfContents extends JTable  {
 		setTableModel();
 		setTablePreferredSizes();
 		setTableRenderers();
+		
+		getModel().addTableModelListener(new TableModelListener() {
+			
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				if(e.getColumn() == LAYER_VISIBILTY_COL_INDEX) {
+					handleLayerVisibiltyFromClick(e);
+				}
+			}
+		});
 	}
 	
+	protected void handleLayerVisibiltyFromClick(TableModelEvent e) {
+		
+		int layerID = (int) getModel().getValueAt(e.getFirstRow(), LAYER_ID_COL_INDEX);
+
+		boolean layerVisibilityState = (boolean) getModel().getValueAt(e.getFirstRow(), 0);
+		Layer layer = findLayerWithID(layerID);
+		
+		layer.setIsVisible(layerVisibilityState);
+		MainFrame.panel.repaint();
+	}
+
 	/**
 	 * Set general render styles for the table and for specific columns
 	 */
@@ -166,7 +193,7 @@ public class TableOfContents extends JTable  {
 	 * Returns an new layer id
 	 * @return new layer id
 	 */
-	public int getNewLayerID() {
+	public static int getNewLayerID() {
 		return layerID;
 	}
 	

@@ -4,7 +4,6 @@
 package core_classes;
 
 import java.awt.Color;
-import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,6 +148,11 @@ public class Layer  {
 	 */
 	public void setListOfFeatures(List<Feature> listOfFeatures) {
 		this.listOfFeatures = listOfFeatures;
+	}
+
+	public int getNextID() {
+
+		return this.listOfFeatures.size() + 1;
 	}
 	
 }
