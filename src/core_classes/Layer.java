@@ -23,6 +23,7 @@ public class Layer  {
 	private String layerName = "";
 	private String layerType = "";
 	private Color layerColor = Settings.DEFAULT_LAYER_COLOR;
+	private int lineWeight = Settings.DEFAULT_LAYER_LINE_WEIGHT;
 	
 	private boolean isVisible = true;
 	private boolean notSaved = true;
@@ -154,6 +155,20 @@ public class Layer  {
 	public int getNextID() {
 
 		return this.listOfFeatures.size() + 1;
+	}
+
+	/**
+	 * @return the lineWeight
+	 */
+	public int getLineWeight() {
+		return lineWeight;
+	}
+
+	/**
+	 * @param lineWeight the lineWeight to set
+	 */
+	public void setLineWeight(int lineWeight) {
+		this.lineWeight = lineWeight;
 	}
 	
 }
