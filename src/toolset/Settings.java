@@ -27,6 +27,7 @@ public class Settings {
 	public static Color cursorColor = new Color(244, 98, 66);
 	public static Color defaultColor = Color.BLACK;
 	public static Color DEFAULT_STATE_COLOR = new Color(31, 105, 224);
+	public static final Color DEFAULT_STATE_TRANSPARENT_COLOR = new Color(31, 105, 224, 180);
 	public static Color HIGHLIGHTED_STATE_COLOR = new Color(239, 66, 14);
 	
 	// GUI parameters
@@ -41,8 +42,12 @@ public class Settings {
 	public static final String POINT_GEOMETRY = "Point";
 	public static final String POLYGON_GEOMETRY = "Polygon";
 
-	public static final Color MUTE_STATE_COLOR = Color.LIGHT_GRAY;
+	public final Color MUTE_STATE_COLOR = Color.LIGHT_GRAY;
 
-	public static final Color FEATURE_CREATED_COLOR = new Color (16, 91, 26);
+	public final static Color FEATURE_CREATED_COLOR = new Color (16, 91, 26);
+
+	public static final int DEFAULT_LAYER_LINE_WEIGHT = 3;
+
+	public static boolean DRAW_GUIDES_AND_TIPS = true;
 
 }

@@ -21,10 +21,6 @@ public class Feature {
     private String featureType;
     private boolean isEllipse = false;
     private double radiusX, radiusY;
-    /**
-	 * @return the radiusX
-	 */
-
 	private double[][] coordinatesArrayXY;
 
     /**
