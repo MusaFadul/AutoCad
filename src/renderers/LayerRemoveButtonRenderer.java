@@ -6,7 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import toolset.Settings;
+import application_frames.Settings;
 
 /**
  * Renders the remove icon on the table cell

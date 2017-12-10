@@ -38,7 +38,7 @@ import features.TextItem;
 import geometry.PolygonItem;
 import tester.MainFrame;
 import toolset.Tools;
-import toolset.Settings;
+import application_frames.Settings;
 
 /**
  * Panel for drawing items
@@ -323,14 +323,14 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		Rectangle2D rect = fm.getStringBounds(guideOrTip.getText(), g2d); 
 		
 		if(guideOrTip.getBasePosition().getX() < 0) {
-			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() + Settings.MouseOffset, getMousePosition().getY()));
+			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() + Settings.mouseOffset, getMousePosition().getY()));
 		}
 		
 		if(guideOrTip.getBasePosition().getX() + rect.getWidth() > getWidth()) {
-			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() - Settings.MouseOffset - rect.getWidth(), getMousePosition().getY()));
+			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() - Settings.mouseOffset - rect.getWidth(), getMousePosition().getY()));
 		}
 		
-		int padding = Settings.toolTipPadding;
+		int padding = Settings.TOOL_TIP_PADDING;
 		g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), Settings.TRANSPARENCY_LEVEL));
 		
 		RoundRectangle2D roundedRect = getRoundedTTRectangleForText(guideOrTip, fm, padding);
@@ -894,7 +894,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		Rectangle2D lastVertex = this.vertexList.get(vertexList.size()-1);
 		
 		// Determine the base position of the mouse point by adding a mouse offset
-		Point2D basePosition = new Point2D.Double(mousePoint.getX() + Settings.MouseOffset, mousePoint.getY());
+		Point2D basePosition = new Point2D.Double(mousePoint.getX() + Settings.mouseOffset, mousePoint.getY());
 		
 		// Get the current mouse position
 		// Tool tip postion will be placed at the right hand side except if

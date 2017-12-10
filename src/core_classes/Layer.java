@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import toolset.Settings;
+import application_frames.Settings;
 
 /**
  * 

@@ -1,17 +1,10 @@
 package core_classes;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Array;
 import core_classes.Feature;
-import geometry.PointItem;
-import geometry.PolylineItem;
-import geometry.PolygonItem;
-import java.awt.Point;
-import java.awt.geom.Line2D;
-import java.awt.Polygon;
 
 /**
  * Created by isaac on 22/11/17.

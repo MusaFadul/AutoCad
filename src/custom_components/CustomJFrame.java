@@ -8,7 +8,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import toolset.Settings;
+import application_frames.Settings;
 
 public class CustomJFrame extends JFrame {
 

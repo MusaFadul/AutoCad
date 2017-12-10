@@ -9,7 +9,7 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import toolset.Settings;
+import application_frames.Settings;
 
 /**
  * 

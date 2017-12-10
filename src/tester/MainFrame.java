@@ -5,6 +5,8 @@ package tester;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -13,6 +15,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
@@ -20,43 +23,35 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import custom_components.CustomJFrame;
-import toolset.Settings;
-import toolset.Tools;
-
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultCaret;
 
+import application_frames.Settings;
+import core_classes.DatabaseConnection;
 import core_classes.Layer;
 import core_components.DrawIconButton;
 import core_components.DrawingJPanel;
 import core_components.TableOfContents;
 import core_components.ToolIconButton;
-
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.border.LineBorder;
-
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-
-import java.awt.Font;
-import java.awt.GridLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultCaret;
-
-
-import javax.swing.UIManager;
+import custom_components.CustomJFrame;
+import toolset.Tools;
 
 
 /**
@@ -82,8 +77,7 @@ public class MainFrame extends CustomJFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrame window = new MainFrame();
-					window.setVisible(true);
+					new MainFrame();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -112,25 +106,62 @@ public class MainFrame extends CustomJFrame {
 	/**Draw button group*/
 	public static ButtonGroup drawButtonGroup = new ButtonGroup();
 	
-	private static JButton btnNewButton;
+	/**Log button*/
+	private static JButton logButton;
 	
+	/**Button that toggles edit session*/
 	private static ToolIconButton btnDrawEdit;
 	
-	
+	/**Database connection object*/
+	public static DatabaseConnection dbConnection;
 	
 	/**
 	 * Constructs the main frame
 	 */
 	public MainFrame() {
 		
-		initialize();
-		log("Application started. GMCM3 Software Engineering HSKA Karlsruhe https://github.com/enocholumide/GMCM3_Software_Eng.git");
+		new Settings().setVisible(false);;
+		connectToDatabase();
+		
 	}
 	
+	private void connectToDatabase() {
+		
+		String host = (Settings.dbHost.getText());
+		int port = Integer.parseInt((Settings.dbPort.getText()));
+		String database = (Settings.dbName.getText());
+		String user = Settings.dbUsername.getText();
+		String password = String.valueOf(Settings.dbPassword.getPassword());
+		
+		try {
+			
+			dbConnection = new DatabaseConnection(host, port, database, user, password);
+			
+			initialize();
+			log("Application started. GMCM3 Software Engineering HSKA Karlsruhe "
+					+ "https://github.com/enocholumide/GMCM3_Software_Eng.git "
+					+ "\t Database connected");
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			
+			
+			Toolkit.getDefaultToolkit().beep();
+			JOptionPane.showMessageDialog( null, "Database connection cannot be established \n\n"
+					+ e.getMessage() + "\n\n Remind me later?", "Database connection error", JOptionPane.ERROR_MESSAGE);
+			
+			initialize();
+			log("Application started. GMCM3 Software Engineering HSKA Karlsruhe "
+					+ "https://github.com/enocholumide/GMCM3_Software_Eng.git "
+					+ "\t Database NOT CONNECTED!!!");		
+		}
+	}
+
 	/**
 	 * Arranges and initializes the application frame and sets up listeners and necessary directives.
 	 */
 	private void initialize() {
+
+		setVisible(true);
 		
 		addWindowListener(new WindowAdapter() {
 			@Override 
@@ -299,9 +330,19 @@ public class MainFrame extends CustomJFrame {
 		toolIconButton_4.setBounds(13, 22, 90, 75);
 		configureRibbon.add(toolIconButton_4);
 		
-		ToolIconButton toolIconButton_5 = new ToolIconButton("Settings", "/images/settings.png", 60, 60);
-		toolIconButton_5.setBounds(113, 22, 90, 75);
-		configureRibbon.add(toolIconButton_5);
+		ToolIconButton settingsButton = new ToolIconButton("Settings", "/images/settings.png", 60, 60);
+		settingsButton.setBounds(113, 22, 90, 75);
+		configureRibbon.add(settingsButton);
+		
+		settingsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new Settings().setVisible(true);;
+				
+			}
+		});
 		
 		JPanel drawRibbon = new JPanel();
 		drawRibbon.setBounds(1437, 11, 236, 108);
@@ -366,11 +407,11 @@ public class MainFrame extends CustomJFrame {
 		
 		drawButtonGroup.add(geomEllipse);
 		
-		btnNewButton = new JButton("Messages");
-		btnNewButton.setForeground(Color.WHITE);
-		btnNewButton.setBackground(Color.BLACK);
-		btnNewButton.setBounds(264, 959, 99, 41);
-		getContentPane().add(btnNewButton);
+		logButton = new JButton("Messages");
+		logButton.setForeground(Color.WHITE);
+		logButton.setBackground(Color.BLACK);
+		logButton.setBounds(264, 959, 99, 41);
+		getContentPane().add(logButton);
 		
 		logText = new JTextArea();
 		logText.setEditable(false);
@@ -547,8 +588,6 @@ public class MainFrame extends CustomJFrame {
 	    main.add(geomList);
 	    main.add(layerNameTextField);
 		
-		//JOptionPane.showMessageDialog(this, new AddLayerPanel(geomList, textField), "This is a title", JOptionPane.WARNING_MESSAGE);
-		
 		// 3. Show a JOption pane to select a new geometry type
 		// -----------------------------------------------------
 		int response = JOptionPane.showConfirmDialog( null, main , "Choose geometry type", JOptionPane.OK_CANCEL_OPTION);
@@ -718,20 +757,20 @@ public class MainFrame extends CustomJFrame {
 			public void run() {
 
 				if( ((System.nanoTime() / 1000000000) - time) % 2 == 0) {
-					btnNewButton.setBackground(Color.BLACK);
+					logButton.setBackground(Color.BLACK);
 				} else {
-					btnNewButton.setBackground(Color.RED);
+					logButton.setBackground(Color.RED);
 				}
 					
 				if( ((System.nanoTime() / 1000000000) - time) > 2) {
-					btnNewButton.setBackground(Color.BLACK);
+					logButton.setBackground(Color.BLACK);
 					ex.shutdown();
 				}
 			}
 			
 		}, 0, 1, TimeUnit.SECONDS);
 		
-		btnNewButton.setBackground(Color.BLACK);
+		logButton.setBackground(Color.BLACK);
 	}
 	
 	/**
