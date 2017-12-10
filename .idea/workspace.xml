@@ -2,61 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3069382d-ed6b-4a72-b223-05d93cea2448" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/tester/TestFeatureCreation.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/tester/TestLayers.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$1.class" afterPath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$2.class" afterPath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$3.class" afterPath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$3.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$4.class" afterPath="$PROJECT_DIR$/bin/application_frames/SettingsFrame$4.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/application_frames/SettingsFrame.class" afterPath="$PROJECT_DIR$/bin/application_frames/SettingsFrame.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_classes/DatabaseConnection.class" afterPath="$PROJECT_DIR$/bin/core_classes/DatabaseConnection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_classes/Feature.class" afterPath="$PROJECT_DIR$/bin/core_classes/Feature.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_classes/Layer.class" afterPath="$PROJECT_DIR$/bin/core_classes/Layer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawIconButton$1.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawIconButton$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawIconButton$2$1.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawIconButton$2$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawIconButton$2.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawIconButton$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawIconButton.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawIconButton.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawingCursor.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawingCursor.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawingJPanel$1$1.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawingJPanel$1$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawingJPanel$1.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawingJPanel$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/DrawingJPanel.class" afterPath="$PROJECT_DIR$/bin/core_components/DrawingJPanel.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/GeometryPanel.class" afterPath="$PROJECT_DIR$/bin/core_components/GeometryPanel.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/GeometryTableIcon.class" afterPath="$PROJECT_DIR$/bin/core_components/GeometryTableIcon.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/LayerRemoveButton$1.class" afterPath="$PROJECT_DIR$/bin/core_components/LayerRemoveButton$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/LayerRemoveButton.class" afterPath="$PROJECT_DIR$/bin/core_components/LayerRemoveButton.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/TableOfContents$1.class" afterPath="$PROJECT_DIR$/bin/core_components/TableOfContents$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/TableOfContents.class" afterPath="$PROJECT_DIR$/bin/core_components/TableOfContents.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/ToolIconButton$1.class" afterPath="$PROJECT_DIR$/bin/core_components/ToolIconButton$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/ToolIconButton$2.class" afterPath="$PROJECT_DIR$/bin/core_components/ToolIconButton$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/core_components/ToolIconButton.class" afterPath="$PROJECT_DIR$/bin/core_components/ToolIconButton.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/custom_components/CustomJFrame.class" afterPath="$PROJECT_DIR$/bin/custom_components/CustomJFrame.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/custom_components/CustomJPanel.class" afterPath="$PROJECT_DIR$/bin/custom_components/CustomJPanel.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/features/GridLine.class" afterPath="$PROJECT_DIR$/bin/features/GridLine.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/features/ShapeItem.class" afterPath="$PROJECT_DIR$/bin/features/ShapeItem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/features/TextItem.class" afterPath="$PROJECT_DIR$/bin/features/TextItem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/geometry/PointItem.class" afterPath="$PROJECT_DIR$/bin/geometry/PointItem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/geometry/PolygonItem.class" afterPath="$PROJECT_DIR$/bin/geometry/PolygonItem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/geometry/PolylineItem.class" afterPath="$PROJECT_DIR$/bin/geometry/PolylineItem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/models/LayerTableModel.class" afterPath="$PROJECT_DIR$/bin/models/LayerTableModel.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/renderers/GeometryTableIconRenderer.class" afterPath="$PROJECT_DIR$/bin/renderers/GeometryTableIconRenderer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/renderers/LayerRemoveButtonRenderer.class" afterPath="$PROJECT_DIR$/bin/renderers/LayerRemoveButtonRenderer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$1.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$2.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$3.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$3.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$4.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$4.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$5.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$5.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$6.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$6.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$7.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$7.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$8.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$8.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame$9.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame$9.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/MainFrame.class" afterPath="$PROJECT_DIR$/bin/tester/MainFrame.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/tester/TestDatabaseConnection.class" afterPath="$PROJECT_DIR$/bin/tester/TestDatabaseConnection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/toolset/Settings.class" afterPath="$PROJECT_DIR$/bin/toolset/Settings.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/toolset/Tools.class" afterPath="$PROJECT_DIR$/bin/toolset/Tools.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core_classes/DatabaseConnection.java" afterPath="$PROJECT_DIR$/src/core_classes/DatabaseConnection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core_classes/Feature.java" afterPath="$PROJECT_DIR$/src/core_classes/Feature.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tester/TestDatabaseConnection.java" afterPath="$PROJECT_DIR$/src/tester/TestDatabaseConnection.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -87,9 +33,10 @@
         <entry file="file://$PROJECT_DIR$/src/tester/TestDatabaseConnection.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="451">
-              <caret line="60" column="0" lean-forward="true" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+              <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <marker date="1512907041904" expanded="true" signature="2877:2882" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -99,12 +46,20 @@
         <entry file="file://$PROJECT_DIR$/src/core_classes/Feature.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-18">
-              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+              <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#306#319#0" expanded="true" />
                 <element signature="e#990#991#0" expanded="true" />
                 <element signature="e#1021#1022#0" expanded="true" />
+                <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+                <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+                <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+                <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+                <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+                <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+                <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+                <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
               </folding>
             </state>
           </provider>
@@ -114,7 +69,7 @@
         <entry file="file://$PROJECT_DIR$/src/geometry/PolygonItem.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="684">
-              <caret line="48" column="32" lean-forward="true" selection-start-line="48" selection-start-column="32" selection-end-line="48" selection-end-column="32" />
+              <caret line="48" column="32" lean-forward="false" selection-start-line="48" selection-start-column="32" selection-end-line="48" selection-end-column="32" />
               <folding>
                 <element signature="e#1232#1233#0" expanded="true" />
                 <element signature="e#1271#1272#0" expanded="true" />
@@ -126,19 +81,16 @@
       <file leaf-file-name="DatabaseConnection.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/core_classes/DatabaseConnection.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state relative-caret-position="684">
+              <caret line="119" column="54" lean-forward="false" selection-start-line="119" selection-start-column="54" selection-end-line="119" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2989#2998#0" expanded="true" />
-                <marker date="1512906940874" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
-                <marker date="1512906940874" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
-                <marker date="1512906940874" expanded="true" signature="3074:3081" ph="SELECT colou... geo_data" />
-                <marker date="1512906940874" expanded="true" signature="3074:3148" ph="SELECT id, t... geo_data" />
-                <marker date="1512906940874" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
-                <marker date="1512906940874" expanded="true" signature="5065:5106" ph="DELETE FROM " />
-                <marker date="1512906940874" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
-                <marker date="1512906940874" expanded="true" signature="8157:8198" ph="DELETE FROM " />
+                <marker date="1512907041903" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
+                <marker date="1512907041903" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
+                <marker date="1512907041903" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
+                <marker date="1512907041903" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
+                <marker date="1512907041903" expanded="true" signature="8157:8198" ph="DELETE FROM " />
               </folding>
             </state>
           </provider>
@@ -148,7 +100,7 @@
         <entry file="file://$PROJECT_DIR$/src/geometry/PointItem.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="469">
-              <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -917,7 +869,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41943000" />
+    <option name="totallyTimeSpent" value="42163000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-3" y="25" width="1926" height="1058" extended-state="6" />
@@ -947,11 +899,34 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39937106" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39937106" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -985,7 +960,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="594">
           <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -993,7 +967,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
           <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#1232#1233#0" expanded="true" />
+            <element signature="e#1271#1272#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1006,6 +983,14 @@
             <element signature="e#306#319#0" expanded="true" />
             <element signature="e#990#991#0" expanded="true" />
             <element signature="e#1021#1022#0" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+            <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+            <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -1017,14 +1002,11 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2989#2998#0" expanded="true" />
-            <marker date="1512906940874" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
-            <marker date="1512906940874" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3081" ph="SELECT colou... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3148" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="5065:5106" ph="DELETE FROM " />
-            <marker date="1512906940874" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
-            <marker date="1512906940874" expanded="true" signature="8157:8198" ph="DELETE FROM " />
+            <marker date="1512907041903" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
+            <marker date="1512907041903" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
+            <marker date="1512907041903" expanded="true" signature="8157:8198" ph="DELETE FROM " />
           </folding>
         </state>
       </provider>
@@ -1038,6 +1020,14 @@
             <element signature="e#306#319#0" expanded="true" />
             <element signature="e#990#991#0" expanded="true" />
             <element signature="e#1021#1022#0" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+            <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+            <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -1049,6 +1039,7 @@
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2877:2882" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1071,14 +1062,11 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2989#2998#0" expanded="true" />
-            <marker date="1512906940874" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
-            <marker date="1512906940874" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3081" ph="SELECT colou... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3148" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="5065:5106" ph="DELETE FROM " />
-            <marker date="1512906940874" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
-            <marker date="1512906940874" expanded="true" signature="8157:8198" ph="DELETE FROM " />
+            <marker date="1512907041903" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
+            <marker date="1512907041903" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
+            <marker date="1512907041903" expanded="true" signature="8157:8198" ph="DELETE FROM " />
           </folding>
         </state>
       </provider>
@@ -1092,6 +1080,14 @@
             <element signature="e#306#319#0" expanded="true" />
             <element signature="e#990#991#0" expanded="true" />
             <element signature="e#1021#1022#0" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+            <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+            <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -1103,6 +1099,7 @@
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2877:2882" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1125,14 +1122,11 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2989#2998#0" expanded="true" />
-            <marker date="1512906940874" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
-            <marker date="1512906940874" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3081" ph="SELECT colou... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3148" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="5065:5106" ph="DELETE FROM " />
-            <marker date="1512906940874" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
-            <marker date="1512906940874" expanded="true" signature="8157:8198" ph="DELETE FROM " />
+            <marker date="1512907041903" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
+            <marker date="1512907041903" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
+            <marker date="1512907041903" expanded="true" signature="8157:8198" ph="DELETE FROM " />
           </folding>
         </state>
       </provider>
@@ -1146,6 +1140,14 @@
             <element signature="e#306#319#0" expanded="true" />
             <element signature="e#990#991#0" expanded="true" />
             <element signature="e#1021#1022#0" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+            <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+            <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -1162,14 +1164,11 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2989#2998#0" expanded="true" />
-            <marker date="1512906940874" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
-            <marker date="1512906940874" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3081" ph="SELECT colou... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3148" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="5065:5106" ph="DELETE FROM " />
-            <marker date="1512906940874" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
-            <marker date="1512906940874" expanded="true" signature="8157:8198" ph="DELETE FROM " />
+            <marker date="1512907041903" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
+            <marker date="1512907041903" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
+            <marker date="1512907041903" expanded="true" signature="8157:8198" ph="DELETE FROM " />
           </folding>
         </state>
       </provider>
@@ -1180,6 +1179,7 @@
           <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2877:2882" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1193,6 +1193,14 @@
             <element signature="e#306#319#0" expanded="true" />
             <element signature="e#990#991#0" expanded="true" />
             <element signature="e#1021#1022#0" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+            <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+            <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -1228,26 +1236,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="72" column="0" lean-forward="false" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tester/TestFeatureCreation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-720">
-          <caret line="26" column="9" lean-forward="true" selection-start-line="26" selection-start-column="9" selection-end-line="26" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tester/TestLayers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="109">
-          <caret line="26" column="76" lean-forward="false" selection-start-line="26" selection-start-column="76" selection-end-line="26" selection-end-column="76" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tester/TestFeatureCreation.java" />
+    <entry file="file://$PROJECT_DIR$/src/tester/TestLayers.java" />
     <entry file="file://$PROJECT_DIR$/src/core_classes/Layer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
@@ -1263,7 +1256,7 @@
     <entry file="file://$PROJECT_DIR$/src/geometry/PolygonItem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="684">
-          <caret line="48" column="32" lean-forward="true" selection-start-line="48" selection-start-column="32" selection-end-line="48" selection-end-column="32" />
+          <caret line="48" column="32" lean-forward="false" selection-start-line="48" selection-start-column="32" selection-end-line="48" selection-end-column="32" />
           <folding>
             <element signature="e#1232#1233#0" expanded="true" />
             <element signature="e#1271#1272#0" expanded="true" />
@@ -1282,7 +1275,7 @@
     <entry file="file://$PROJECT_DIR$/src/geometry/PointItem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="469">
-          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1292,9 +1285,10 @@
     <entry file="file://$PROJECT_DIR$/src/tester/TestDatabaseConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="451">
-          <caret line="60" column="0" lean-forward="true" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+          <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2877:2882" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1302,31 +1296,36 @@
     <entry file="file://$PROJECT_DIR$/src/core_classes/Feature.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-18">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#306#319#0" expanded="true" />
             <element signature="e#990#991#0" expanded="true" />
             <element signature="e#1021#1022#0" expanded="true" />
+            <marker date="1512907041904" expanded="true" signature="2243:2311" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2377:2382" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2427:2430" ph=" }" />
+            <marker date="1512907041904" expanded="false" signature="2460:2465" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2480:2483" ph=" }" />
+            <marker date="1512907041904" expanded="true" signature="2486:2518" ph="/**...*/" />
+            <marker date="1512907041904" expanded="false" signature="2546:2551" ph=" { " />
+            <marker date="1512907041904" expanded="false" signature="2566:2569" ph=" }" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/core_classes/DatabaseConnection.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        <state relative-caret-position="684">
+          <caret line="119" column="54" lean-forward="false" selection-start-line="119" selection-start-column="54" selection-end-line="119" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2989#2998#0" expanded="true" />
-            <marker date="1512906940874" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
-            <marker date="1512906940874" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3081" ph="SELECT colou... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3148" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
-            <marker date="1512906940874" expanded="true" signature="5065:5106" ph="DELETE FROM " />
-            <marker date="1512906940874" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
-            <marker date="1512906940874" expanded="true" signature="8157:8198" ph="DELETE FROM " />
+            <marker date="1512907041903" expanded="true" signature="1659:1865" ph="CREATE TABLE... IF" />
+            <marker date="1512907041903" expanded="true" signature="2301:2341" ph="SELECT DISTI... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="3074:3150" ph="SELECT id, t... geo_data" />
+            <marker date="1512907041903" expanded="true" signature="7225:7326" ph="INSERT INTO geo_data... " />
+            <marker date="1512907041903" expanded="true" signature="8157:8198" ph="DELETE FROM " />
           </folding>
         </state>
       </provider>
