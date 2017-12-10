@@ -27,7 +27,6 @@ public class Settings {
 	public static Color cursorColor = new Color(244, 98, 66);
 	public static Color defaultColor = Color.BLACK;
 	public static Color DEFAULT_STATE_COLOR = new Color(31, 105, 224);
-	public static final Color DEFAULT_STATE_TRANSPARENT_COLOR = new Color(31, 105, 224, 180);
 	public static Color HIGHLIGHTED_STATE_COLOR = new Color(239, 66, 14);
 	
 	// GUI parameters
@@ -35,7 +34,7 @@ public class Settings {
 	public static final Color DEFAULT_LAYER_COLOR = Color.BLACK;
 	public static final Color DEFAULT_VERTIX_COLOR = new Color(31, 105, 224);
 	public static final String DRAW_CONTINUE = "continue";
-	public static final String CLOSE_POLYGON_MESSAGE = "Click point to close the polygon. Turn on the snap for precise drawing";
+	public static final String CLOSE_POLYGON_MESSAGE = "Click the first point to finish polygon";
 	public static final String CLOSE_POLYLINE_MESSAGE = "Click first or last point to close polyline";
 
 	public static final String POLYLINE_GEOMETRY = "Polyline";
@@ -48,6 +47,14 @@ public class Settings {
 
 	public static final int DEFAULT_LAYER_LINE_WEIGHT = 3;
 
+	public static final double MouseOffset = 20;
+
+	public static final int TRANSPARENCY_LEVEL = 180;
+
+	public static final String DEFAULT_MOUSE_TIP = "Click the last point to finish shape";
+
 	public static boolean DRAW_GUIDES_AND_TIPS = true;
+
+	public static int toolTipPadding = 5;
 
 }

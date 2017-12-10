@@ -16,17 +16,17 @@ public class TestLayers {
 
     public static void main(String[] args) {
 
-        Layer myLayer = new Layer(new PointItem(0, new Point(0,0)), "Layer0");
+    /*    Layer myLayer = new Layer(new PointItem(0, new Point(0,0)), "Layer0");
 
-        PointItem myPoint0 = new PointItem(myLayer.getNextId(), new Point(0,0));
+        PointItem myPoint0 = new PointItem(myLayer.getNextID(), new Point(0,0));
         myLayer.addFeature(myPoint0);
-        PointItem myPoint1 = new PointItem(myLayer.getNextId(), new Point(0,0));
+        PointItem myPoint1 = new PointItem(myLayer.getNextID(), new Point(0,0));
         myLayer.addFeature(myPoint1);
-        PointItem myPoint2 = new PointItem(myLayer.getNextId(), new Point(0,0));
+        PointItem myPoint2 = new PointItem(myLayer.getNextID(), new Point(0,0));
         myLayer.addFeature(myPoint2);
-        PointItem myPoint3 = new PointItem(myLayer.getNextId(), new Point(0,0));
+        PointItem myPoint3 = new PointItem(myLayer.getNextID(), new Point(0,0));
         myLayer.addFeature(myPoint3);
-        PointItem myPoint4 = new PointItem(myLayer.getNextId(), new Point(0,0));
+        PointItem myPoint4 = new PointItem(myLayer.getNextID(), new Point(0,0));
         myLayer.addFeature(myPoint4);
 
 
@@ -58,7 +58,7 @@ public class TestLayers {
         for (int i=0; i<myLayerFeatureList.size(); i++) {
             System.out.println(myLayerFeatureList.get(i).getId());
         }
-
+*/
     }
 
 }
