@@ -108,7 +108,7 @@ public class Feature {
 	 * @return the coordinatesArrayXY
 	 */
 	public double[][] getCoordinatesArrayXY() {
-		
+
 		double[] x = new double[vertices.size()];
 		double[] y = new double[vertices.size()];
 		
@@ -116,7 +116,7 @@ public class Feature {
 			x[i] = vertices.get(i).getCenterX();
 			y[i] = vertices.get(i).getCenterY();
 		}
-		
+
 		double[][] newCoords = {x, y};
 		
 		coordinatesArrayXY = newCoords;
