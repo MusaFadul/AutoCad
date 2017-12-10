@@ -115,6 +115,10 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 
 	/**Graphics font metrics for getting graphic details of strings to*/
 	private FontMetrics g2dFontMetrics;
+
+	private TextItem movingMouseTip;
+
+	private String currentMouseTip = Settings.DEFAULT_MOUSE_TIP;
 	
 
 	/**
@@ -293,25 +297,11 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			// ---------------------
 			if(this.drawGuide!=null) {
 				
-				g2d.setFont(new Font("Tw Cen MT", Font.ITALIC, 15)); 
-				FontMetrics fm = g2d.getFontMetrics();
-				Rectangle2D rect = fm.getStringBounds(drawGuide.getText(), g2d); 
+				paintMouseGuide(drawGuide, Settings.DEFAULT_STATE_COLOR);
+			}
+			if(this.movingMouseTip!=null) {
 				
-				int padding = 5;
-				
-				g2d.setColor(Settings.DEFAULT_STATE_TRANSPARENT_COLOR);
-				
-				g2d.fill(new RoundRectangle2D.Double(
-						
-						(int)drawGuide.getBasePosition().getX() - padding,
-	            		(int)drawGuide.getBasePosition().getY() - fm.getAscent() - padding,
-	                       (int) rect.getWidth() + padding*2,
-	                       (int) rect.getHeight() + padding, padding + 2, padding + 2
-						));
-				
-				g2d.setColor(Color.WHITE);							
-				g2d.drawString(drawGuide.getText(), (int) (int)drawGuide.getBasePosition().getX() + padding/2, (int)drawGuide.getBasePosition().getY()- padding/2);
-				
+				paintMouseGuide(movingMouseTip, Color.BLACK);
 			}
 			
 		} catch (Exception e) {
@@ -325,6 +315,49 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			g2d.dispose();
 		}
 	}
+
+	private void paintMouseGuide(TextItem guideOrTip, Color color) {
+		
+		g2d.setFont(new Font("Tw Cen MT", Font.ITALIC, 15)); 
+		FontMetrics fm = g2d.getFontMetrics();
+		Rectangle2D rect = fm.getStringBounds(guideOrTip.getText(), g2d); 
+		
+		if(guideOrTip.getBasePosition().getX() < 0) {
+			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() + Settings.MouseOffset, getMousePosition().getY()));
+		}
+		
+		if(guideOrTip.getBasePosition().getX() + rect.getWidth() > getWidth()) {
+			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() - Settings.MouseOffset - rect.getWidth(), getMousePosition().getY()));
+		}
+		
+		int padding = Settings.toolTipPadding;
+		g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), Settings.TRANSPARENCY_LEVEL));
+		
+		RoundRectangle2D roundedRect = getRoundedTTRectangleForText(guideOrTip, fm, padding);
+		guideOrTip.setBorderRectangleInPanel(roundedRect);
+		
+		g2d.fill(roundedRect);
+		
+		g2d.setColor(Color.WHITE);							
+		g2d.drawString(guideOrTip.getText(), (int) (int)guideOrTip.getBasePosition().getX() + padding/2, (int)guideOrTip.getBasePosition().getY()- padding/2);
+
+	}
+
+	private RoundRectangle2D getRoundedTTRectangleForText(TextItem drawGuide, FontMetrics fm, int padding) {
+		
+		Rectangle2D rect = fm.getStringBounds(drawGuide.getText(), g2d); 
+		
+		return new RoundRectangle2D.Double(
+				
+				(int)drawGuide.getBasePosition().getX() - padding,
+        		(int)drawGuide.getBasePosition().getY() - fm.getAscent() - padding,
+                   (int) rect.getWidth() + padding*2,
+                   (int) rect.getHeight() + padding, padding + 2, padding + 2
+				) ;
+				
+	}
+
+
 
 	/**
 	 * Turns the grid on and off
@@ -399,6 +432,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			}
 		}
 	}
+	
 	
 	/**
 	 * Abandons current drawing session
@@ -488,6 +522,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			
 			this.tempShape = path;
 			
+			this.currentMouseTip = "Specify third point";
+			
 			repaint();
 		}
 	}
@@ -523,7 +559,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							
 							// 1.4 Show some tool tip
 							// ------------------------------------------------
-							this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYGON_MESSAGE);
+							this.currentMouseTip = "Close now!";
 							repaint();
 							
 						} else {
@@ -531,7 +567,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							// 1.5 Erase the snap and the tool tip if mouse goes away
 							// ------------------------------------------------
 							this.snapPoint = null;
-							this.tooltip = null;
+							this.currentMouseTip = Settings.CLOSE_POLYGON_MESSAGE;;
 							repaint();
 						}
 					}
@@ -557,7 +593,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						
 						// 2.3 Show some tips
 						// ------------------------------------------------
-						this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYLINE_MESSAGE);
+						this.currentMouseTip  = Settings.CLOSE_POLYLINE_MESSAGE;
+						//this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYLINE_MESSAGE);
 						repaint();
 						
 					} 
@@ -593,6 +630,76 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		}
 	}
 
+	private void handleDrawingEllipse(MouseEvent e) {
+	
+		if(vertexList.size() == 1) {
+			
+			this.currentMouseTip = "Specify major axis ";
+			repaint();
+			
+			// Ellipse parameters
+			double centerX = vertexList.get(0).getCenterX();
+			double centerY = vertexList.get(0).getCenterY();
+			double diamX = Math.abs(centerX - e.getX()) * 2;
+			double diamY = Math.abs(centerY - e.getY()) * 2;
+			
+			tempShape = new Ellipse2D.Double(centerX - diamX / 2, centerY - diamY / 2, diamX, diamY);
+			repaint();
+				
+		}
+		
+		if(vertexList.size() == 2) {
+			
+			this.currentMouseTip = "Specify minor axis ";
+			repaint();
+			
+			// Ellipse parameters
+			double centerX = vertexList.get(0).getCenterX();
+			double centerY = vertexList.get(0).getCenterY();
+			double diamX = Math.abs(centerX - vertexList.get(1).getCenterX()) * 2;
+			double diamY = Math.abs(centerY - e.getY()) * 2;
+			
+			tempShape = new Ellipse2D.Double(centerX - diamX / 2, centerY - diamY / 2, diamX, diamY);
+			repaint();
+		}
+		
+		
+		
+	}
+
+	/**
+	 * Handles right click 
+	 */
+	private void handleRightClickIntent() {
+		
+		if(this.vertexList.size() > 1) {
+			
+			vertexList.remove(vertexList.size() - 1);
+			
+			if(currentLayer.getLayerType().equals(Settings.POLYLINE_GEOMETRY)) {
+				
+				tempLine.remove(tempLine.size() - 1);
+			}
+			
+			if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
+				
+				showTempPolygon(vertexList);
+			}
+			
+			repaint();
+		}
+		
+		if(this.vertexList.size() == 1) {
+			
+			this.vertexList.clear();
+			
+			cleanUpDrawing();
+			
+			repaint();
+		}
+		
+	}
+
 	/**
 	 * Shows temporary polygon on the panel while drawing
 	 * 
@@ -619,7 +726,10 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			
 			// Render
 			repaint();
-		}	
+		} else {
+			tempShape = null;
+			repaint();
+		}
 	}
 	
 	/**
@@ -674,14 +784,19 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				if(Settings.DRAW_GUIDES_AND_TIPS == true) {
 					
 					if(this.vertexList.size() > 0) {
-						paintDrawDetailsToNewPoint(e.getPoint());
-					}
+						getDrawDetailsToNewPoint(e.getPoint());
+						getMouseToolTip(e.getPoint());
+					}	
 				}
-					
-					
+	
 				// Handling Polyline 
 				if(currentLayer.getLayerType().equals(Settings.POLYLINE_GEOMETRY)) {
 					this.handleDrawingPolyline(e);
+				}
+				
+				// Handling Rectangle 
+				if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) && MainFrame.getCurrentFeatureType().equals("Ellipse")) {
+					this.handleDrawingEllipse(e);
 				}
 					
 				// Handling Rectangle 
@@ -698,8 +813,6 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY) && MainFrame.getCurrentFeatureType().equals("Triangle")) {
 					this.handleDrawingTriangle(e);
 				}
-				
-				
 				
 				if(snappingModeIsOn) {
 					
@@ -763,10 +876,48 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	}
 	
 	/**
-	 * Shows tips such as length, angle from a point to another point
+	 * General handler for updating the message on the mouse tool tip.
+	 * Can be disabled at the settings. <br>
+	 * This is done at every mouse move event. <br>
+	 * The message can be changed or controlled b merely updating the global currentMouseTip variable
+	 * @param mousePoint Current mouse event point
+	 */
+	private void getMouseToolTip(Point mousePoint) {
+		
+		// Determine the text from the global currentMouseTip variable
+		String mouseTip = this.currentMouseTip;
+		
+		// Get the font metrics of the text
+		Rectangle2D rect = g2dFontMetrics.getStringBounds(mouseTip, g2d);
+		
+		// Determine the last vertex
+		Rectangle2D lastVertex = this.vertexList.get(vertexList.size()-1);
+		
+		// Determine the base position of the mouse point by adding a mouse offset
+		Point2D basePosition = new Point2D.Double(mousePoint.getX() + Settings.MouseOffset, mousePoint.getY());
+		
+		// Get the current mouse position
+		// Tool tip postion will be placed at the right hand side except if
+		// the current mouse postion is at the left of the lastVertex
+		// Therefore the tip base postion will be shifted based on the text's graphics width
+		if(mousePoint.getX() < lastVertex.getCenterX()) {
+			basePosition.setLocation(new Point2D.Double(basePosition.getX() - rect.getWidth(), basePosition.getY()));
+		}
+		
+		// Create the text item
+		this.movingMouseTip = new TextItem(basePosition, mouseTip);
+		
+		repaint();
+		
+	}
+
+	/**
+	 * Shows tips such as length, angle from a point to another point <br>
+	 * Detects conflict between the mouse tool tip as well <br>
+	 * Refuses to draw if such conflict exists <br>
 	 * @param point
 	 */
-	private void paintDrawDetailsToNewPoint(Point mousePoint) {
+	private void getDrawDetailsToNewPoint(Point mousePoint) {
 		
 		// 1. Determine the base point
 		// This is the last point on the vertex list
@@ -789,22 +940,26 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		// Get the angle
 		int angle = (int) Tools.getAngle(base, mousePoint);
 		
-		// Check for conflict with the tool tip
-		boolean paint = true;
-		if(this.tooltip != null) {
-			
-			Rectangle2D rectTooltip = g2dFontMetrics.getStringBounds(tooltip.getText(), g2d);
-			Rectangle2D rectGuide = g2dFontMetrics.getStringBounds(tooltip.getText(), g2d);
+		// Check for conflict with the mouse tool tip
 		
-			paint = Tools.isOverlap(rectTooltip, rectGuide);
+		boolean conflict = false;
+		
+		if(this.drawGuide != null && this.movingMouseTip != null) {
+			
+			try {
+				conflict = (movingMouseTip.borderIntersectsAnotherRectangle(drawGuide.getBorderRectangleInPanel().getBounds2D()));
+			}
+			catch(NullPointerException e) {
+				MainFrame.log("The guides were not found, ignoring finding conflict");
+			}
+			
 		}
 		
-		if(paint) {
+		if(!conflict) {
 			
 			// Create a draw guide showing the length and the angle 
 			this.drawGuide = new TextItem(toolTipPosition, lineLength + " " + angle + "\u00b0");
 			
-			// Display
 			repaint();
 			
 		} else {
@@ -915,6 +1070,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		
 		// Remove any tool tip on the drawing
 		this.tooltip = null;
+		
+		this.movingMouseTip = null;
 		
 		// Remove the current snap
 		this.snapPoint = null;
@@ -1029,6 +1186,13 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					clickedPoint = new Point2D.Double(this.snapPoint.getCenterX(), this.snapPoint.getCenterY());
 				}
 				
+				Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
+				
+				
+				if(SwingUtilities.isRightMouseButton(e)) {
+					
+					handleRightClickIntent();
+				}
 				//------------------------------------------------------------------------
 				
 				//                   Protocol for drawing polygon
@@ -1036,226 +1200,262 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				//------------------------------------------------------------------------
 				if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
 					
-					//--------------------------------------------------------------------
-					//                        HEXAGONS 
-					//                   (FREE FORM POLYGON)
-					//--------------------------------------------------------------------
 					
-					if(MainFrame.getCurrentFeatureType().equals("Hexagon")) {
+					if(!SwingUtilities.isRightMouseButton(e)) {
+						
+						//--------------------------------------------------------------------
+						//                        HEXAGONS 
+						//                   (FREE FORM POLYGON)
+						//--------------------------------------------------------------------
+						if(MainFrame.getCurrentFeatureType().equals("Ellipse")) {
+							
+							if(this.vertexList.size() < 3) {
+								
+								// For the major axis
+								// Snap the vertex to the Y of the center point keep the X of the mouse point
+								if(this.vertexList.size() == 1) {
+									vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), vertexList.get(0).getCenterY() - (snapSize/2), snapSize, snapSize);
+									vertexList.add(vertex);
+								}
+								// For the minor axis
+								// Snap the vertex to the X of the center point keep the Y of the mouse point
+								else if (this.vertexList.size() == 2) {
+									vertex = new Rectangle2D.Double(vertexList.get(0).getCenterX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
+									vertexList.add(vertex);
+								} else 
+									// For the center point
+									vertexList.add(vertex);
+							}
+							
+							// If the total size of the vertex is equals to 3
+							// Time to finish up the ellipse
+							if(this.vertexList.size() == 3) {
 	
-						// 1. Create a vertex for the new point using the current snap size ( see Settings )
-						// ---------------------------------------------------------------------------------
-						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
-						
-						// 2. Add the vertex the the current list of vertex and the global snap points
-						// ---------------------------------------------------------------------------------
-						this.vertexList.add(vertex);
-						this.globalDrawingSnapPoints.add(vertex);
-						
-						// 3. Render the vertex immediately
-						// --------------------------------
-						repaint();
-						
-						// 4. Procedure to show temporary polygon while drawing and close
-						// --------------------------------------------------------------
-						if(this.vertexList.size() > 1) {
-							
-							// 4.1 Show some message to the user
-							// ----------------------------------
-							MainFrame.log("Tip: Click the first point to finish shape");
-							
-							// 4.2 If at least 3 points have been drawn, show a temporary polygon
-							// ------------------------------------------------------------------
-							if(this.vertexList.size() > 2) {
-								showTempPolygon(this.vertexList);
-							}
-							
-							// 4.3 If the first point of the polygon was clicked
-							// --------------------------------------------------------------------
-							if(this.vertexList.get(0).getCenterX() == clickedPoint.getX() && this.vertexList.get(0).getCenterY() == clickedPoint.getY()) {
+								// Get the ellipse parameters
+								// -------------------------------
 								
-								// 4.3.1 Close the polygon and create a new feature
-								finishPath(this.vertexList);
+								// Center will be the first point in the list, at the index of 0
+								double centerX = vertexList.get(0).getCenterX();
+								double centerY = vertexList.get(0).getCenterY();
 								
-								// 4.3.2 Log some message
-								String message = "Polygon feature created, click to save your edits";
-								MainFrame.log(message);
-								showAnimatedHint(message, Settings.DEFAULT_STATE_COLOR);
+								// The diameter at X will be the absolute (linear) distance from the centerX to the first point X
+								double diamX = Math.abs(centerX - vertexList.get(1).getCenterX()) * 2;
 								
-								// 4.3.3 Clean up the panel
-								cleanUpDrawing();
-							
-								// 4.3.7 Update the panel
-								repaint();
+								// The diameter at Y will be the absolute (linear) distance from the centerY to the last point Y
+								double diamY = Math.abs(centerY - vertexList.get(2).getCenterY()) * 2;
+								
+								// Create a shape with the parameters
+								Shape shape = new Ellipse2D.Double(centerX - diamX / 2, centerY - diamY / 2, diamX, diamY);
+								
+								// Create new feature in current layer and set all attributes
+								Feature ellipse = new Feature(currentLayer.getNextID());
+								ellipse.setEllipse(true, diamX / 2, diamY / 2);
+								ellipse.setShape(shape);
+								ellipse.setFeatureType("Ellipse");
+								ellipse.setVertices(vertexList);
+								
+								// Add to the current layer's feature list
+								currentLayer.getListOfFeatures().add(ellipse);
+								currentLayer.setNotSaved(true);
+								
+								onFeatureCreated("New ellipse created");
 							}
 						}
-					}
-					
-					//--------------------------------------------------------------------
-					//                        RECTANGLE 
-					//                        (2 POINT)
-					//--------------------------------------------------------------------
-					
-					else if (MainFrame.getCurrentFeatureType().equals("Rectangle")) {
 						
-						
-						// 1. Create a vertex for the new point using the current snap size ( see Settings )
-						// ---------------------------------------------------------------------------------
-						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
-						
-						// 2. Add the vertex the the current list of vertex and the global snap points
-						// ---------------------------------------------------------------------------------
-						this.vertexList.add(vertex);
-						this.globalDrawingSnapPoints.add(vertex);
-						
-						// 3. Render the vertex immediately
-						// --------------------------------
-						repaint();
-						
-						
-						// Because the top left and bottom right vertix are needed to finish the rectangle
-						// The list of vertex will be be only two
-						// Guides will be handles by the mouse moved event
-						
-						if (this.vertexList.size() == 2) {
+						else if(MainFrame.getCurrentFeatureType().equals("Hexagon")) {
+		
+							// 1. Create a vertex for the new point using the current snap size ( see Settings )
+							// ---------------------------------------------------------------------------------
 							
-							// Save the layer
-							Feature rectangle = new Feature(currentLayer.getNextID());
-							
-							Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
-							Point2D m = clickedPoint;
-							
-							double x = m.getX();
-							double y = m.getY();
-							
-							double width = Math.abs(m.getX() - b.getX());
-							double height =  Math.abs(m.getY() - b.getY());
-							
-							if(b.getX() < m.getX()) {
-								x = b.getX();
-							}
-							
-							if(b.getY() < m.getY()) {
-								y = b.getY();
-							}
-							
-							rectangle.setShape(new Rectangle2D.Double(x, y, width, height));
-							
-							// 
-							Rectangle2D topRight = new Rectangle2D.Double(	vertexList.get(1).getCenterX() - (snapSize / 2),
-																			vertexList.get(0).getCenterY() - (snapSize / 2),
-																			snapSize, snapSize);
-							
-							Rectangle2D bottomLeft = new Rectangle2D.Double(vertexList.get(0).getCenterX() - (snapSize / 2),
-																			vertexList.get(1).getCenterY() - (snapSize / 2),
-																			snapSize, snapSize);
-							vertexList.add(1, topRight);
-							vertexList.add(bottomLeft);
-							
-							rectangle.getVertices().addAll(vertexList);
-							rectangle.setFeatureType("Rectangle");
-							currentLayer.getListOfFeatures().add(rectangle);
-							currentLayer.setNotSaved(true);
-							
-							// log messages ();
-							String message = "New rectangle created";
-							MainFrame.log(message);
-							showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
-							
-							cleanUpDrawing();
-							repaint ();
-						}
-					} 
-					
-					//--------------------------------------------------------------------
-					//                              CIRCLE 
-					//                        (CENTER - RADIUS)
-					//--------------------------------------------------------------------
-					
-					else if (MainFrame.getCurrentFeatureType().equals("Circle")) {
-						
-						// 1. Create a vertex for the new point using the current snap size ( see Settings )
-						// ---------------------------------------------------------------------------------
-						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
-						
-						// 2. Add the center point
-						// ------------------------
-						if(this.vertexList.isEmpty()) {
-							vertexList.add(vertex);
-						}
-						
-						// 3. If a center point have been added
-						// -------------------------------------
-						else if (this.vertexList.size() == 1) {
-							
-							// 3.1 Get circle parameters
-							
-							// (a) The center point will be the first point in the vertex list
-							Point2D centerPoint = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
-							
-							// (b) The radius of the circle will be the distance from the center point to the clicked point 
-							double radius = (clickedPoint.distance(centerPoint));
-							
-							// 3.2 Construct circle with the parameters
-							Shape circleShape = new Ellipse2D.Double(centerPoint.getX() - radius, centerPoint.getY() - radius , radius * 2, radius* 2);
-							
-							// 3.3 Create a new feature
-							Feature circle = new Feature(currentLayer.getNextID());
-							circle.setVertices(vertexList);
-							circle.setFeatureType("Circle");
-							circle.setEllipse(true, radius, radius);
-							circle.setShape(circleShape);
-							
-							// 3.4 Add the to current layer list of features
-							currentLayer.getListOfFeatures().add(circle);
-							currentLayer.setNotSaved(true);
-							
-							// 3.5 Log some messages
-							String message = "New Circle created";
-							MainFrame.log(message);
-							showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
-							
-							// 3.6 Clean up the drawing
-							cleanUpDrawing();
-							repaint ();
-							
-						}	
-					}
-					
-					//--------------------------------------------------------------------
-					//                              TRIANGLE 
-					//                         (3 POINT TRIANGLE)
-					//--------------------------------------------------------------------
-					
-					else if (MainFrame.getCurrentFeatureType().equals("Triangle")) {
-						
-						// 1. Create a vertex for the new point using the current snap size ( see Settings )
-						// ---------------------------------------------------------------------------------
-						Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
-						
-						
-						if(this.vertexList.size() <= 1) {
-							
+							// 2. Add the vertex the the current list of vertex and the global snap points
+							// ---------------------------------------------------------------------------------
 							this.vertexList.add(vertex);
+							this.globalDrawingSnapPoints.add(vertex);
+							
+							// 3. Render the vertex immediately
+							// --------------------------------
 							repaint();
 							
+							// 4. Procedure to show temporary polygon while drawing and close
+							// --------------------------------------------------------------
+							if(this.vertexList.size() > 1) {
+								
+								// 4.1 Show some message to the user
+								// ----------------------------------
+								MainFrame.log("Tip: " + Settings.CLOSE_POLYGON_MESSAGE);
+								this.currentMouseTip = Settings.CLOSE_POLYGON_MESSAGE;
+								repaint();
+								
+								// 4.2 If at least 3 points have been drawn, show a temporary polygon
+								// ------------------------------------------------------------------
+								if(this.vertexList.size() > 2) {
+									showTempPolygon(this.vertexList);
+								}
+								
+								// 4.3 If the first point of the polygon was clicked
+								// --------------------------------------------------------------------
+								if(this.vertexList.get(0).getCenterX() == clickedPoint.getX() && this.vertexList.get(0).getCenterY() == clickedPoint.getY()) {
+									
+									// 4.3.1 Close the polygon and create a new feature
+									finishPath(this.vertexList);
+									
+									onFeatureCreated("Polygon feature created, click to save your edits");
+									
+								}
+							}
 						}
 						
-						else if (this.vertexList.size() == 2) {
+						//--------------------------------------------------------------------
+						//                        RECTANGLE 
+						//                        (2 POINT)
+						//--------------------------------------------------------------------
+						
+						else if (MainFrame.getCurrentFeatureType().equals("Rectangle")) {
 							
+							
+							// 1. Create a vertex for the new point using the current snap size ( see Settings )
+							// ---------------------------------------------------------------------------------
+							
+							// 2. Add the vertex the the current list of vertex and the global snap points
+							// ---------------------------------------------------------------------------------
 							this.vertexList.add(vertex);
-							finishPath(this.vertexList);
+							this.globalDrawingSnapPoints.add(vertex);
 							
-							// 3.5 Log some messages
-							String message = "Triangle created";
-							MainFrame.log(message);
-							showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
+							// 3. Render the vertex immediately
+							// --------------------------------
+							this.currentMouseTip = "Click to finish rectangle";
+							repaint();
 							
-							// 3.6 Clean up the drawing
-							cleanUpDrawing();
-							repaint ();
+							
+							// Because the top left and bottom right vertix are needed to finish the rectangle
+							// The list of vertex will be be only two
+							// Guides will be handles by the mouse moved event
+							
+							if (this.vertexList.size() == 2) {
+								
+								// Save the layer
+								Feature rectangle = new Feature(currentLayer.getNextID());
+								
+								Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
+								Point2D m = clickedPoint;
+								
+								double x = m.getX();
+								double y = m.getY();
+								
+								double width = Math.abs(m.getX() - b.getX());
+								double height =  Math.abs(m.getY() - b.getY());
+								
+								if(b.getX() < m.getX()) {
+									x = b.getX();
+								}
+								
+								if(b.getY() < m.getY()) {
+									y = b.getY();
+								}
+								
+								rectangle.setShape(new Rectangle2D.Double(x, y, width, height));
+								
+								// 
+								Rectangle2D topRight = new Rectangle2D.Double(	vertexList.get(1).getCenterX() - (snapSize / 2),
+																				vertexList.get(0).getCenterY() - (snapSize / 2),
+																				snapSize, snapSize);
+								
+								Rectangle2D bottomLeft = new Rectangle2D.Double(vertexList.get(0).getCenterX() - (snapSize / 2),
+																				vertexList.get(1).getCenterY() - (snapSize / 2),
+																				snapSize, snapSize);
+								vertexList.add(1, topRight);
+								vertexList.add(bottomLeft);
+								
+								rectangle.getVertices().addAll(vertexList);
+								rectangle.setFeatureType("Rectangle");
+								currentLayer.getListOfFeatures().add(rectangle);
+								currentLayer.setNotSaved(true);
+								
+								// log messages ();
+								onFeatureCreated("New rectangle created");
+							}
+						} 
+						
+						//--------------------------------------------------------------------
+						//                              CIRCLE 
+						//                        (CENTER - RADIUS)
+						//--------------------------------------------------------------------
+						
+						else if (MainFrame.getCurrentFeatureType().equals("Circle")) {
+							
+							// 1. Create a vertex for the new point using the current snap size ( see Settings )
+							// ---------------------------------------------------------------------------------
+							
+							// 2. Add the center point
+							// ------------------------
+							if(this.vertexList.isEmpty()) {
+								vertexList.add(vertex);
+								this.currentMouseTip = "Specify radius";
+								repaint();
+							}
+							
+							// 3. If a center point have been added
+							// -------------------------------------
+							else if (this.vertexList.size() == 1) {
+								
+								// 3.1 Get circle parameters
+								
+								// (a) The center point will be the first point in the vertex list
+								Point2D centerPoint = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
+								
+								// (b) The radius of the circle will be the distance from the center point to the clicked point 
+								double radius = (clickedPoint.distance(centerPoint));
+								
+								// 3.2 Construct circle with the parameters
+								Shape circleShape = new Ellipse2D.Double(centerPoint.getX() - radius, centerPoint.getY() - radius , radius * 2, radius* 2);
+								
+								// 3.3 Create a new feature
+								Feature circle = new Feature(currentLayer.getNextID());
+								circle.setVertices(vertexList);
+								circle.setFeatureType("Circle");
+								circle.setEllipse(true, radius, radius);
+								circle.setShape(circleShape);
+								
+								// 3.4 Add the to current layer list of features
+								currentLayer.getListOfFeatures().add(circle);
+								currentLayer.setNotSaved(true);
+								
+								// 3.5 Log some messages
+								onFeatureCreated("New Circle created");
+								
+							}	
 						}
 						
+						//--------------------------------------------------------------------
+						//                              TRIANGLE 
+						//                         (3 POINT TRIANGLE)
+						//--------------------------------------------------------------------
+						
+						else if (MainFrame.getCurrentFeatureType().equals("Triangle")) {
+							
+							// 1. Create a vertex for the new point using the current snap size ( see Settings )
+							// ---------------------------------------------------------------------------------
+							
+							if(this.vertexList.size() <= 1) {
+								
+								this.vertexList.add(vertex);
+								this.currentMouseTip = "Specify second point";
+								repaint();
+								
+							}
+							
+							else if (this.vertexList.size() == 2) {
+								
+								this.vertexList.add(vertex);
+								
+								
+								finishPath(this.vertexList);
+								
+								// 3.5 Log some messages
+								onFeatureCreated("Triangle created");
+							}
+							
+						}
 					}
 				}
 				
@@ -1266,7 +1466,6 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					
 					// 1. Create a vertex for the new point using the current snap size ( see Settings )
 					// ---------------------------------------------------------------------------------
-					Rectangle2D vertex = new Rectangle2D.Double(clickedPoint.getX() - (snapSize/2), clickedPoint.getY() - (snapSize/2), snapSize, snapSize);
 					
 					// 2. Current size of the drawn vertex
 					// ------------------------------------
@@ -1316,16 +1515,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							// 4.3 Finish up the line and create a new feature
 							finishPath(this.vertexList);
 							
-							// 4.3 Log some message
-							String message = "Polyline feature created, click to save your edits";
-							MainFrame.log(message);
-							showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
-							
-							// 4.4 Clean up the drawing panel
-							cleanUpDrawing();
-							
-							// 4.3.7 Update the panel
-							repaint();
+							// 4.3 Log some message and update
+							onFeatureCreated("Polyline feature created");
 							
 						}
 						
@@ -1358,6 +1549,23 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		} else {
 			MainFrame.log("Drawing attempted but edit session is off");	
 		}
+	}
+	
+	/**
+	 * When a feature has been created, log some message, repaint and and clean up the drawing
+	 * @param message
+	 */
+	private void onFeatureCreated(String message) {
+
+		// Log some message
+		MainFrame.log(message);
+		showAnimatedHint(message, Settings.FEATURE_CREATED_COLOR);
+		
+		// Clean up the panel
+		cleanUpDrawing();
+	
+		// Update the panel
+		repaint();
 	}
 
 	@Override

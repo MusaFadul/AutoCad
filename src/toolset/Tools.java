@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.ImageIcon;
 
-import javafx.scene.shape.Line;
 import tester.MainFrame;
 
 public class Tools {
@@ -110,5 +109,4 @@ public class Tools {
 	
 		return true;
 	}
-
 }
