@@ -1,3 +1,31 @@
+<<<<<<< HEAD
 .idea
 .project
 *.class
+=======
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IDES
+.idea
+>>>>>>> 5aa1901af465ef1dbeab47e635a0b553decdb7de

@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.ImageIcon;
 
@@ -42,5 +43,70 @@ public class Tools {
 		icon = new ImageIcon( newimg );
 		return icon;
 	}
+	
+	public static Point2D.Double interpolationByDistance(Line2D l, int d) {
+		
+		Point2D.Double start = new Point2D.Double(l.getX1(), l.getY1());
+		Point2D.Double end = new Point2D.Double(l.getX2(), l.getY2());
+		
+		double length = start.distance(end);
+		double ratio = d/ length;
+		double x = ratio * start.getX() + (1.0 - ratio) * end.getX();
+		double y = ratio * start.getY() + (1.0 - ratio) * end.getY();
 
+
+		Point2D.Double answerPoint = new Point2D.Double(x,y);
+		return answerPoint;
+
+	}
+	
+	public static float getAngle(Point2D from, Point2D target) {
+		
+	    float angle = (float) Math.toDegrees(Math.atan2(target.getY() - from.getY(), target.getX() - from.getX()));
+
+	    if(angle < 0){
+	        angle += 360;
+	    }
+	    
+	    angle += 90;
+	    
+	    if(angle > 360) {
+	    	angle = angle - 360;
+	    }
+	    
+	    if(angle == 360) {
+	    	angle = 0;
+	    }
+	    
+	    return angle ;
+	}
+
+	public static boolean isOverlap(Rectangle2D rectTooltip, Rectangle2D rectGuide) {
+	
+		Point2D topRight = new Point2D.Double(rectGuide.getMaxX(), rectGuide.getMaxX());
+		
+		if(rectTooltip.contains(topRight)) {
+			return false;
+		}
+		
+		Point2D bottomRight = new Point2D.Double(rectGuide.getMaxX(), rectGuide.getMaxY());
+		
+		if(rectTooltip.contains(bottomRight)) {
+			return false;
+		}
+		
+		Point2D bottomLeft = new Point2D.Double(rectGuide.getMinX(), rectGuide.getMaxY());
+		
+		if(rectTooltip.contains(bottomLeft)) {
+			return false;
+		}
+		
+		Point2D topLeft = new Point2D.Double(rectGuide.getMinX(), rectGuide.getMinY());
+		
+		if(rectTooltip.contains(topLeft)) {
+			return false;
+		}
+	
+		return true;
+	}
 }

@@ -66,4 +66,9 @@ public class PolygonItem extends Feature {
         this.geometry = polygon;
     }
 
+	public double[][] getArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
