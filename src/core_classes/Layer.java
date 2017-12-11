@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import toolset.Settings;
+import application_frames.Settings;
 
 /**
  * 
@@ -23,6 +23,7 @@ public class Layer  {
 	private String layerName = "";
 	private String layerType = "";
 	private Color layerColor = Settings.DEFAULT_LAYER_COLOR;
+	private int lineWeight = Settings.DEFAULT_LAYER_LINE_WEIGHT;
 	
 	private boolean isVisible = true;
 	private boolean notSaved = true;
@@ -58,6 +59,11 @@ public class Layer  {
 	 */
 	public void setId(int id) {
 		this.id = id;
+		
+		// !!!! Change the layer ID of all the features in the layer list
+		for(Feature feature : listOfFeatures) {
+			feature.setLayerID(id);
+		}
 	}
 
 	/**
@@ -91,7 +97,7 @@ public class Layer  {
 	/**
 	 * @param isActive the isActive to set
 	 */
-	public void setIsVisible(boolean isVisible) {
+	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 
@@ -151,9 +157,23 @@ public class Layer  {
 		this.listOfFeatures = listOfFeatures;
 	}
 
-	public int getNextID() {
+	public int getNextFeatureID() {
 
 		return this.listOfFeatures.size() + 1;
+	}
+
+	/**
+	 * @return the lineWeight
+	 */
+	public int getLineWeight() {
+		return lineWeight;
+	}
+
+	/**
+	 * @param lineWeight the lineWeight to set
+	 */
+	public void setLineWeight(int lineWeight) {
+		this.lineWeight = lineWeight;
 	}
 	
 }

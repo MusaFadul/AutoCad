@@ -8,6 +8,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import application_frames.Settings;
+import toolset.Tools;
+
 /**
  * 
  * @author OlumideEnoch
@@ -21,11 +24,8 @@ public class Feature {
     private String featureType;
     private boolean isEllipse = false;
     private double radiusX, radiusY;
-    /**
-	 * @return the radiusX
-	 */
-
 	private double[][] coordinatesArrayXY;
+	private int layerID;
 
     /**
      * Constructor for making feature object
@@ -55,6 +55,19 @@ public class Feature {
 	 */
 	public void setVertices(List<Rectangle2D> vertices) {
 		this.vertices = vertices;
+	}
+	
+	public void setVerticesFromArray(int[] xp, int[] yp) {
+		
+		double[] x = Tools.copyFromIntArray(xp);
+		double[] y = Tools.copyFromIntArray(xp);
+		
+		int snapSize = Settings.snappingTolerance;
+		
+		for(int i = 0; i < x.length; i++) {
+			this.vertices.add(new Rectangle2D.Double(x[i] - (snapSize/2), y[i] - (snapSize/2), snapSize, snapSize));
+		}
+		
 	}
 
 	/**
@@ -140,6 +153,20 @@ public class Feature {
 	 */
 	public double getRadiusY() {
 		return radiusY;
+	}
+
+	/**
+	 * @return the layerID
+	 */
+	public int getLayerID() {
+		return layerID;
+	}
+
+	/**
+	 * @param layerID the layerID to set
+	 */
+	public void setLayerID(int layerID) {
+		this.layerID = layerID;
 	}
 
 }

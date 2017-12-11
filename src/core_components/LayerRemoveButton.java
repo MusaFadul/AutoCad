@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import tester.MainFrame;
-import toolset.Settings;
+import application_frames.Settings;
 
 /**
  * Button for removing layer at the table of contents

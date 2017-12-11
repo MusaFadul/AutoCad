@@ -42,7 +42,6 @@ public class PointItem extends Feature {
      * Getter method that returns the geometry in a standardized pair of arrays format for storage in the DB.
      * @return double[][] containting an x array and a y array, in that order.
      */
-    @Override
     public double[][] getArray() {
         double[] x = new double[] {this.geometry.getX()};
         double[] y = new double[] {this.geometry.getY()};

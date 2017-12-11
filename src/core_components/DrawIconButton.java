@@ -9,7 +9,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.MetalToggleButtonUI;
 
 import tester.MainFrame;
-import toolset.Settings;
+import application_frames.Settings;
 import toolset.Tools;
 
 public class DrawIconButton extends JToggleButton {

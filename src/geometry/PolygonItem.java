@@ -47,6 +47,9 @@ public class PolygonItem extends Feature {
 
         super(id);
         this.geometry = polygon;
+        super.setVerticesFromArray(polygon.xpoints, polygon.ypoints);
+        super.setShape(polygon);
+        super.setFeatureType("Polygon");
 
     }
 
@@ -65,5 +68,10 @@ public class PolygonItem extends Feature {
     public void setGeometry(Polygon polygon) {
         this.geometry = polygon;
     }
+
+	public double[][] getArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

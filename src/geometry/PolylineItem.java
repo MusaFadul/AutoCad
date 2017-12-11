@@ -67,4 +67,9 @@ public class PolylineItem extends Feature {
         this.geometry = polyline;
     }
 
+	public double[][] getArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
