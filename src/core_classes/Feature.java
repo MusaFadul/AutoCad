@@ -26,6 +26,8 @@ public class Feature {
     private double radiusX, radiusY;
 	private double[][] coordinatesArrayXY;
 	private int layerID;
+	private boolean isHighlighted = false;
+	private boolean isVisibile = true;
 
     /**
      * Constructor for making feature object
@@ -167,6 +169,34 @@ public class Feature {
 	 */
 	public void setLayerID(int layerID) {
 		this.layerID = layerID;
+	}
+
+	/**
+	 * @return the isHighlighted
+	 */
+	public boolean isHighlighted() {
+		return isHighlighted;
+	}
+
+	/**
+	 * @param isHighlighted the isHighlighted to set
+	 */
+	public void setHighlighted(boolean isHighlighted) {
+		this.isHighlighted = isHighlighted;
+	}
+
+	/**
+	 * @return the isVisibile
+	 */
+	public boolean isVisibile() {
+		return isVisibile;
+	}
+
+	/**
+	 * @param isVisibile the isVisibile to set
+	 */
+	public void setVisibile(boolean isVisibile) {
+		this.isVisibile = isVisibile;
 	}
 
 }
