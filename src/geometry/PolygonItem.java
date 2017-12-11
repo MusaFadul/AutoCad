@@ -47,6 +47,9 @@ public class PolygonItem extends Feature {
 
         super(id);
         this.geometry = polygon;
+        super.setVerticesFromArray(polygon.xpoints, polygon.ypoints);
+        super.setShape(polygon);
+        super.setFeatureType("Polygon");
 
     }
 

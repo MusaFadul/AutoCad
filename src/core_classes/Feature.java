@@ -3,10 +3,14 @@
  */
 package core_classes;
 
+import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+
+import application_frames.Settings;
+import toolset.Tools;
 
 /**
  * 
@@ -51,6 +55,19 @@ public class Feature {
 	 */
 	public void setVertices(List<Rectangle2D> vertices) {
 		this.vertices = vertices;
+	}
+	
+	public void setVerticesFromArray(int[] xp, int[] yp) {
+		
+		double[] x = Tools.copyFromIntArray(xp);
+		double[] y = Tools.copyFromIntArray(xp);
+		
+		int snapSize = Settings.snappingTolerance;
+		
+		for(int i = 0; i < x.length; i++) {
+			this.vertices.add(new Rectangle2D.Double(x[i] - (snapSize/2), y[i] - (snapSize/2), snapSize, snapSize));
+		}
+		
 	}
 
 	/**

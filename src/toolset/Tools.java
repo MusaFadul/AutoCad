@@ -109,4 +109,12 @@ public class Tools {
 	
 		return true;
 	}
+
+	public static double[] copyFromIntArray(int[] source) {
+		double[] doubleArray = new double[source.length];
+		for(int i = 0; i < source.length; i++) {
+			doubleArray[i] = source[i];
+		}
+		return doubleArray;
+	}
 }
