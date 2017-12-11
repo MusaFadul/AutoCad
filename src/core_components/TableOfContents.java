@@ -1,13 +1,25 @@
 package core_components;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
+import application_frames.AttributeTable;
 import core_classes.Layer;
 import renderers.LayerRemoveButtonRenderer;
 import renderers.GeometryTableIconRenderer;
@@ -38,13 +50,20 @@ public class TableOfContents extends JTable {
 	private static DefaultTableModel tableModel;
 	
 	/**The index of the layer id at the table model*/
-	public static final int LAYER_ID_COL_INDEX = 4;
+	public static final int LAYER_VISIBILTY_COL_INDEX = 0;
 	
 	/**The index of the layer id at the table model*/
-	public static final int LAYER_VISIBILTY_COL_INDEX = 0;
+	public static final int LAYER_NAME_COL_INDEX = 2;
+	
+	/**The index of the layer id at the table model*/
+	public static final int LAYER_ID_COL_INDEX = 4;
+	
+
 
 	/**The list of layers on the table*/
 	public static List <Layer> layerList = new ArrayList<Layer>();
+	
+	JPopupMenu menu = new JPopupMenu();
 	
 	/**
 	 * Constructs a new table of contents
@@ -55,18 +74,94 @@ public class TableOfContents extends JTable {
 		setTableModel();
 		setTablePreferredSizes();
 		setTableRenderers();
+		setPopUpMenu();
 		
 		getModel().addTableModelListener(new TableModelListener() {
-			
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				if(e.getColumn() == LAYER_VISIBILTY_COL_INDEX) {
-					handleLayerVisibiltyFromClick(e);
+				handleTableChangedListener(e);
+			}
+			
+		});
+		
+		addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				super.mousePressed(e);
+				JTable source = (JTable) e.getSource();
+				int row = source.rowAtPoint(e.getPoint());
+				int col = source.columnAtPoint(e.getPoint());
+				
+				if(! source.isRowSelected(row)) {
+					source.changeSelection(row, col, false, false);
 				}
+			}
+		});
+		
+		setComponentPopupMenu(menu);
+	}
+	
+	protected void handleTableChangedListener(TableModelEvent e) {
+		
+		if(e.getColumn() == LAYER_VISIBILTY_COL_INDEX) {
+			handleLayerVisibiltyFromClick(e);
+		}
+		if(e.getColumn() == LAYER_NAME_COL_INDEX) {
+			//
+			// Rename layer
+		}
+	}
+	
+	/**
+	 * Attaches popup menu to the table
+	 */
+	private void setPopUpMenu() {
+		
+		
+		menu = new JPopupMenu();
+		
+		JMenuItem attributeTable  = new JMenuItem ("Open attribute table");
+		
+		attributeTable.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Component c = (Component) e.getSource();
+				JPopupMenu popup = (JPopupMenu) c.getParent();
+				JTable table = (JTable) popup.getInvoker();
+				int layerID = (int) (table.getValueAt(table.getSelectedRow(), LAYER_ID_COL_INDEX));
+				
+				System.out.println(layerID);
+				
+				Layer layer = findLayerWithID(layerID);
+				
+				System.out.println(layer.getLayerType() + " " + layer.getLayerName());
+				
+				new AttributeTable(layer).setVisible(true);
+			
+			}
+		});
+		
+		menu.add(attributeTable);
+		
+		menu.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				menu.setVisible(false);
+			}
+			
+			@Override
+			public void focusGained(FocusEvent arg0) {;
 			}
 		});
 	}
 	
+	/**
+	 * 
+	 * @param e
+	 */
 	protected void handleLayerVisibiltyFromClick(TableModelEvent e) {
 		
 		int layerID = (int) getModel().getValueAt(e.getFirstRow(), LAYER_ID_COL_INDEX);
@@ -74,7 +169,7 @@ public class TableOfContents extends JTable {
 		boolean layerVisibilityState = (boolean) getModel().getValueAt(e.getFirstRow(), 0);
 		Layer layer = findLayerWithID(layerID);
 		
-		layer.setIsVisible(layerVisibilityState);
+		layer.setVisible(layerVisibilityState);
 		MainFrame.panel.repaint();
 	}
 
@@ -280,7 +375,40 @@ public class TableOfContents extends JTable {
 		return layerNames;
 		
 	}
+}
 
+class PopClickListener extends MouseAdapter {
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		super.mousePressed(e);
+		if(SwingUtilities.isRightMouseButton(e)) {
+			doPop(e);
+		}
+		
+	}
+	private void doPop(MouseEvent e) {
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		super.mouseReleased(e);
+		System.out.println("Mouse mmoved");
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		super.mouseEntered(e);
+		System.out.println("Mouse mmoved");
+	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		super.mouseMoved(e);
+		
+		System.out.println("Mouse mmoved");
+	}
 }
 
 
