@@ -59,6 +59,11 @@ public class Layer  {
 	 */
 	public void setId(int id) {
 		this.id = id;
+		
+		// !!!! Change the layer ID of all the features in the layer list
+		for(Feature feature : listOfFeatures) {
+			feature.setLayerID(id);
+		}
 	}
 
 	/**
@@ -92,7 +97,7 @@ public class Layer  {
 	/**
 	 * @param isActive the isActive to set
 	 */
-	public void setIsVisible(boolean isVisible) {
+	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 
@@ -152,7 +157,7 @@ public class Layer  {
 		this.listOfFeatures = listOfFeatures;
 	}
 
-	public int getNextID() {
+	public int getNextFeatureID() {
 
 		return this.listOfFeatures.size() + 1;
 	}

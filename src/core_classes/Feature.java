@@ -3,7 +3,6 @@
  */
 package core_classes;
 
-import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class Feature {
     private boolean isEllipse = false;
     private double radiusX, radiusY;
 	private double[][] coordinatesArrayXY;
+	private int layerID;
 
     /**
      * Constructor for making feature object
@@ -153,6 +153,20 @@ public class Feature {
 	 */
 	public double getRadiusY() {
 		return radiusY;
+	}
+
+	/**
+	 * @return the layerID
+	 */
+	public int getLayerID() {
+		return layerID;
+	}
+
+	/**
+	 * @param layerID the layerID to set
+	 */
+	public void setLayerID(int layerID) {
+		this.layerID = layerID;
 	}
 
 }

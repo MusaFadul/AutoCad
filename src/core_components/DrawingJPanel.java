@@ -746,7 +746,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		path.moveTo(pointList.get(0).getCenterX(), pointList.get(0).getCenterY());
 		
 		// Create a new feature with an ID
-		PolygonItem featurePolygon = new PolygonItem(currentLayer.getNextID(), path);
+		PolygonItem featurePolygon = new PolygonItem(currentLayer.getNextFeatureID(), path);
 		
 		// Connect the path and add all the vertices to the feature
 		for(Rectangle2D vertex : pointList) {
@@ -1248,7 +1248,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 								Shape shape = new Ellipse2D.Double(centerX - diamX / 2, centerY - diamY / 2, diamX, diamY);
 								
 								// Create new feature in current layer and set all attributes
-								Feature ellipse = new Feature(currentLayer.getNextID());
+								Feature ellipse = new Feature(currentLayer.getNextFeatureID());
+								ellipse.setLayerID(currentLayer.getId());
 								ellipse.setEllipse(true, diamX / 2, diamY / 2);
 								ellipse.setShape(shape);
 								ellipse.setFeatureType("Ellipse");
@@ -1334,7 +1335,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							if (this.vertexList.size() == 2) {
 								
 								// Save the layer
-								Feature rectangle = new Feature(currentLayer.getNextID());
+								Feature rectangle = new Feature(currentLayer.getNextFeatureID());
 								
 								Point2D b = new Point2D.Double(this.vertexList.get(0).getCenterX(), this.vertexList.get(0).getCenterY());
 								Point2D m = clickedPoint;
@@ -1368,6 +1369,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 								
 								rectangle.getVertices().addAll(vertexList);
 								rectangle.setFeatureType("Rectangle");
+								rectangle.setLayerID(currentLayer.getId());
 								currentLayer.getListOfFeatures().add(rectangle);
 								currentLayer.setNotSaved(true);
 								
@@ -1410,7 +1412,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 								Shape circleShape = new Ellipse2D.Double(centerPoint.getX() - radius, centerPoint.getY() - radius , radius * 2, radius* 2);
 								
 								// 3.3 Create a new feature
-								Feature circle = new Feature(currentLayer.getNextID());
+								Feature circle = new Feature(currentLayer.getNextFeatureID());
+								circle.setLayerID(currentLayer.getId());
 								circle.setVertices(vertexList);
 								circle.setFeatureType("Circle");
 								circle.setEllipse(true, radius, radius);
