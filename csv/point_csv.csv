@@ -1,0 +1,4 @@
+id;type;is_ellipse;x;y;rx;ry
+0;POINT;FALSE;[0];[0];0;0
+1;POINT;FALSE;[2];[3];0;0
+2;POINT;FALSE;[6];[7];0;0

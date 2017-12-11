@@ -1,0 +1,6 @@
+id;type;is_ellipse;x;y;rx;ry
+0;POLYGON;FALSE;[0,1,1,0];[0,0,1,0];0;0
+1;POLYGON;FALSE;[0,2,2,0];[0,0,2,0];0;0
+2;POLYGON;FALSE;[0,3,3,0];[0,0,3,0];0;0
+3;POLYGON;TRUE;[3];[3];1;1
+4;POLYGON;TRUE;[4];[4];1;2
