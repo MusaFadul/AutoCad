@@ -63,7 +63,7 @@ public class TableOfContents extends JTable {
 	/**The list of layers on the table*/
 	public static List <Layer> layerList = new ArrayList<Layer>();
 	
-	JPopupMenu menu = new JPopupMenu();
+	public static JPopupMenu menu = new JPopupMenu();
 	
 	/**
 	 * Constructs a new table of contents

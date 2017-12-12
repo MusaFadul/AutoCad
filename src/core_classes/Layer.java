@@ -175,5 +175,23 @@ public class Layer  {
 	public void setLineWeight(int lineWeight) {
 		this.lineWeight = lineWeight;
 	}
+
+	public void highlightAllFeatures(boolean cond) {
+		for(Feature feature : listOfFeatures) {
+			feature.setHighlighted(cond);
+		}
+	}
+	
+	public Feature getFeatureWithID(int id) {
+		
+		for(Feature feature : listOfFeatures) {
+			if(feature.getId() == id ) {
+				return feature;
+			}
+		}
+		
+		return null;
+		
+	}
 	
 }

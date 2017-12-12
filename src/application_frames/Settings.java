@@ -380,6 +380,7 @@ public class Settings extends JFrame {
 	public static Color defaultColor = Color.BLACK;
 	public static double mouseOffset = 20;
 	public static boolean DRAW_GUIDES_AND_TIPS = true;
+	public static Color DEFAULT_SELECTION_COLOR = new Color (135, 234, 105);
 
 	// GUI parameters
 	public static final ImageIcon LAYER_DELETE_ICON = Tools.getIconImage("/images/bin.png", 15, 15);
@@ -403,8 +404,7 @@ public class Settings extends JFrame {
 	public static final int DEFAULT_LAYER_LINE_WEIGHT = 3;
 	public static final int TRANSPARENCY_LEVEL = 180;
 	public static final int TOOL_TIP_PADDING = 5;
+	public static final Color FEATURE_HIGHLIGHTED_STATE_COLOR = Color.CYAN;
 
 
-
-	
 }
