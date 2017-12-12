@@ -175,22 +175,36 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					
 					for(Feature feature : layer.getListOfFeatures()) {
 						
-						if(layer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
-							// Fill the shape
-							g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 100));
-							g2d.fill(feature.getShape());
-						}
+						if(feature.isVisibile()) {
 						
-						// Draw outline
-						g2d.setStroke(new BasicStroke(layer.getLineWeight()));
-						g2d.setColor(c);
-						g2d.draw(feature.getShape());
-						
-						// Render the shape vertices
-						for(Shape shape : feature.getVertices()) {
+							if(feature.isHighlighted()) {
+								c = Settings.FEATURE_HIGHLIGHTED_STATE_COLOR;
+							} 
+							
+							else if (!feature.isHighlighted()) {
+								c = layer.getLayerColor();
+							}
+								
+							if(layer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
+								// Fill the shape
+								g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 100));
+								g2d.fill(feature.getShape());
+							}
+							
+							// Draw outline
 							g2d.setColor(c);
-							g2d.fill(shape);
-						}	
+							g2d.setStroke(new BasicStroke(layer.getLineWeight()));
+							g2d.draw(feature.getShape());
+							
+							
+							
+							// Render the shape vertices
+							for(Shape shape : feature.getVertices()) {
+								g2d.setColor(c);
+								g2d.fill(shape);
+							}	
+							
+						}
 					}
 				}
 			}

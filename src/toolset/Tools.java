@@ -117,4 +117,20 @@ public class Tools {
 		}
 		return doubleArray;
 	}
+	
+	public static int[] removeDuplicates(int []s){
+        int result[] = new int[s.length], j=0;
+        for (int i : s) {
+            if(!isExists(result, i))
+                result[j++] = i;
+        }
+        return result;
+    }
+    private static boolean isExists(int[] array, int value){
+        for (int i : array) {
+            if(i==value)
+                return true;
+        }
+        return false;
+    }
 }

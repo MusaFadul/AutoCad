@@ -403,8 +403,7 @@ public class Settings extends JFrame {
 	public static final int DEFAULT_LAYER_LINE_WEIGHT = 3;
 	public static final int TRANSPARENCY_LEVEL = 180;
 	public static final int TOOL_TIP_PADDING = 5;
+	public static final Color FEATURE_HIGHLIGHTED_STATE_COLOR = Color.CYAN;
 
 
-
-	
 }
