@@ -61,7 +61,7 @@ public class DatabaseConnection {
 
     }
 
-    public List<Feature> readTable(String tableName) throws SQLException {
+    public ResultSet readTable(String tableName) throws SQLException {
 
         /**
          * Retrieves the features in a specified table.
@@ -69,75 +69,36 @@ public class DatabaseConnection {
          * @return A string array ArrayList containing all the features in the specified table.
          */
 
-        List<Feature> returnList = new ArrayList<Feature>();
-
             PreparedStatement selectStatement = conn.prepareStatement("SELECT id, type, is_ellipse, x, y, rx, ry FROM geo_data WHERE table_name = ?;");
             selectStatement.setString(1, tableName); // table name
             ResultSet resultSet = selectStatement.executeQuery();
 
-            int featureId;
-            String featureType;
-            double[] xArray, yArray;
-            double xRadius, yRadius;
-
-            while (resultSet.next()) {
-
-                // Initialize feature with id
-                featureId = resultSet.getInt("id");
-                Feature feature = new Feature(featureId);
-
-                // Set feature type
-                // TODO: type isn't being written properly in the first place so i can't tell if this works or not
-                featureType = resultSet.getString("type");
-                feature.setFeatureType(featureType);
-
-                // Set feature XY coordinate arrays
-                xArray = (double[]) resultSet.getArray("x").getArray();
-                yArray = (double[]) resultSet.getArray("y").getArray();
-                feature.setCoordinatesArrayXY(new double[][] {xArray, yArray});
-
-                // Set the radii if it is an ellipse
-                if (resultSet.getBoolean("is_ellipse")) {
-                    xRadius = resultSet.getDouble("rx");
-                    yRadius = resultSet.getDouble("ry");
-                    //feature.setRadius
-                    //TODO: Feature has no setRadius method
-                }
-
-            }
-
-        return returnList;
+        return resultSet;
 
     }
-//
-//    public void writeTable(String tableName, ArrayList<Feature[]> features) {
-//
-//        /**
-//         * Creates a new table with specified features.  Overwrites the table if it already exists.
-//         * @param tableName String representing the name of the table to which to save the features.
-//         * @param features String Array ArrayList containing all the properties of the features.
-//         */
-//
-//        try {
-//
-//            PreparedStatement dropStatement = conn.prepareStatement("DELETE FROM geo_data WHERE table_name = ?;");
-//            dropStatement.setString(1, tableName);
-//            dropStatement.executeUpdate();
-//
-//            this.appendToTable(tableName, features);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//
+
+    public void writeTable(String tableName, Layer layer) throws SQLException {
+
+        /**
+         * Creates a new table with specified features.  Overwrites the table if it already exists.
+         * @param tableName String representing the name of the table to which to save the features.
+         * @param layer Layer object to be added to the database as a table.
+         */
+
+            PreparedStatement dropStatement = conn.prepareStatement("DELETE FROM geo_data WHERE table_name = ?;");
+            dropStatement.setString(1, tableName);
+            dropStatement.executeUpdate();
+
+            this.appendToTable(tableName, layer);
+
+    }
+
     public void appendToTable(String tableName, Layer layer) throws SQLException {
 
         /**
          * Adds new features to an existing table.
          * @param tableName String representing the name of the table to which to save the features.
-         * @param features String Array ArrayList containing all the properties of the features.
+         * @param layer Layer object to be appended to the existing table in the database
          */
 
         List<Feature> featureList = layer.getListOfFeatures();
@@ -161,11 +122,9 @@ public class DatabaseConnection {
             yCoords = feature.getCoordinatesArrayXY()[1];
             Object[] xCoordsObject = new Object[xCoords.length];
             Object[] yCoordsObject = new Object[yCoords.length];
-            for (int j=0; j<xCoords.length; i++) {
+            for (int j=0; j<xCoords.length; j++) {
                 xCoordsObject[j] = Double.toString(xCoords[j]);
                 yCoordsObject[j] = Double.toString(yCoords[j]);
-                System.out.println(xCoords[j] + yCoords[j]);
-                System.out.println(Double.toString(xCoords[j]) + Double.toString(yCoords[j]));
             }
 
             Array myX = conn.createArrayOf("float4", xCoordsObject);
@@ -191,23 +150,17 @@ public class DatabaseConnection {
         }
 
     }
-//
-//    public void dropTable(String tableName) {
-//
-//        /** Drops a table from the database
-//         * @param tableName String representing the name of the table to be deleted.
-//         */
-//
-//        try {
-//
-//            PreparedStatement dropStatement = conn.prepareStatement("DELETE FROM geo_data WHERE table_name = ?;");
-//            dropStatement.setString(1, tableName);
-//            dropStatement.executeUpdate();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
+    public void dropTable(String tableName) throws SQLException {
+
+        /** Drops a table from the database
+         * @param tableName String representing the name of the table to be deleted.
+         */
+
+            PreparedStatement dropStatement = conn.prepareStatement("DELETE FROM geo_data WHERE table_name = ?;");
+            dropStatement.setString(1, tableName);
+            dropStatement.executeUpdate();
+
+    }
 
 }
