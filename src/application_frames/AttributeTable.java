@@ -150,7 +150,7 @@ public class AttributeTable extends JFrame implements ActionListener {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				
-				layer.clearAllHighlightedFeatures();
+				layer.highlightAllFeatures(false);
 				MainFrame.panel.repaint();
 					
 				int[] rows = table.getSelectedRows();

@@ -18,7 +18,9 @@ import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -106,14 +108,22 @@ public class MainFrame extends CustomJFrame {
 	/**Draw button group*/
 	public static ButtonGroup drawButtonGroup = new ButtonGroup();
 	
+	/**Tools button group*/
+	public static ButtonGroup toolsButtonGroup = new ButtonGroup();
+	
 	/**Log button*/
 	private static JButton logButton;
 	
 	/**Button that toggles edit session*/
-	private static ToolIconButton btnDrawEdit;
+	public static ToolIconButton btnDrawEdit;
+	
+	/**Button that toggles query/ selection session*/
+	public static ToolIconButton btnQuery;
 	
 	/**Database connection object*/
 	public static DatabaseConnection dbConnection;
+	
+	public static List<ToolIconButton> buttonsList = new ArrayList<ToolIconButton>();
 	
 	/**
 	 * Constructs the main frame
@@ -125,37 +135,6 @@ public class MainFrame extends CustomJFrame {
 		
 	}
 	
-	private void connectToDatabase() {
-		
-		String host = (Settings.dbHost.getText());
-		int port = Integer.parseInt((Settings.dbPort.getText()));
-		String database = (Settings.dbName.getText());
-		String user = Settings.dbUsername.getText();
-		String password = String.valueOf(Settings.dbPassword.getPassword());
-		
-		try {
-			
-			dbConnection = new DatabaseConnection(host, port, database, user, password);
-			
-			initialize();
-			log("Application started. GMCM3 Software Engineering HSKA Karlsruhe "
-					+ "https://github.com/enocholumide/GMCM3_Software_Eng.git "
-					+ "\t Database connected");
-			
-		} catch (ClassNotFoundException | SQLException e) {
-			
-			
-			Toolkit.getDefaultToolkit().beep();
-			JOptionPane.showMessageDialog( null, "Database connection cannot be established \n\n"
-					+ e.getMessage() + "\n\n Remind me later?", "Database connection error", JOptionPane.ERROR_MESSAGE);
-			
-			initialize();
-			log("Application started. GMCM3 Software Engineering HSKA Karlsruhe "
-					+ "https://github.com/enocholumide/GMCM3_Software_Eng.git "
-					+ "\t Database NOT CONNECTED!!!");		
-		}
-	}
-
 	/**
 	 * Arranges and initializes the application frame and sets up listeners and necessary directives.
 	 */
@@ -236,22 +215,32 @@ public class MainFrame extends CustomJFrame {
 		getContentPane().add(fileRibbon);
 		fileRibbon.setLayout(null);
 		
-		ToolIconButton toolIconButton_1 = new ToolIconButton("Files", "/images/file.png", 60, 60);
-		toolIconButton_1.setToolTipText("Open previous projects");
-		toolIconButton_1.setBounds(10, 22, 90, 75);
-		fileRibbon.add(toolIconButton_1);
+		ToolIconButton filesBtn = new ToolIconButton("Files", "/images/file.png", 60, 60);
+		filesBtn.setToolTipText("Open previous projects");
+		filesBtn.setBounds(10, 22, 90, 75);
+		fileRibbon.add(filesBtn);
 		
-		ToolIconButton toolIconButton_2 = new ToolIconButton("Import", "/images/import.png", 60, 60);
-		toolIconButton_2.setToolTipText("Import projects from csv");
-		toolIconButton_2.setText("");
-		toolIconButton_2.setBounds(109, 22, 90, 75);
-		fileRibbon.add(toolIconButton_2);
+		//toolsButtonGroup.add(filesBtn);
 		
-		ToolIconButton toolIconButton_3 = new ToolIconButton("Export", "/images/export.png", 60, 60);
-		toolIconButton_3.setToolTipText("Export current project to csv");
-		toolIconButton_3.setText("");
-		toolIconButton_3.setBounds(209, 22, 90, 75);
-		fileRibbon.add(toolIconButton_3);
+		buttonsList.add(filesBtn);
+		
+		ToolIconButton importBtn = new ToolIconButton("Import", "/images/import.png", 60, 60);
+		importBtn.setToolTipText("Import projects from csv");
+		importBtn.setText("");
+		importBtn.setBounds(109, 22, 90, 75);
+		fileRibbon.add(importBtn);
+		
+		//toolsButtonGroup.add(importBtn);
+		buttonsList.add(importBtn);
+		
+		ToolIconButton exportBtn = new ToolIconButton("Export", "/images/export.png", 60, 60);
+		exportBtn.setToolTipText("Export current project to csv");
+		exportBtn.setText("");
+		exportBtn.setBounds(209, 22, 90, 75);
+		fileRibbon.add(exportBtn);
+		
+		//toolsButtonGroup.add(exportBtn);
+		buttonsList.add(exportBtn);
 		
 		JPanel selectionRibbon = new JPanel();
 		selectionRibbon.setBounds(583, 11, 213, 108);
@@ -260,15 +249,34 @@ public class MainFrame extends CustomJFrame {
 		selectionRibbon.setBackground(Color.WHITE);
 		getContentPane().add(selectionRibbon);
 		
-		ToolIconButton toolIconButton = new ToolIconButton("Select items", "/images/select.png", 60, 60);
+		ToolIconButton toolIconButton = new ToolIconButton("Select", "/images/select.png", 60, 60);
 		toolIconButton.setBounds(10, 22, 90, 75);
 		selectionRibbon.add(toolIconButton);
 		toolIconButton.setToolTipText("Select items on the drawing panel");
 		
-		ToolIconButton btnQuery = new ToolIconButton("Clear sel", "/images/query.png", 60,60);
+		btnQuery = new ToolIconButton("Query", "/images/query.png", 60,60);
 		btnQuery.setBounds(110, 22, 90, 75);
 		selectionRibbon.add(btnQuery);
-		btnQuery.setToolTipText("Clear selection");
+		btnQuery.setToolTipText("Select with rectangle");
+		
+		btnQuery.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				System.out.println("Button query");
+				
+				if(panel.editModeIsOn) {
+					
+					MainFrame.btnDrawEdit.setButtonReleased(true);
+					MainFrame.btnDrawEdit.doClick();
+					MainFrame.btnDrawEdit.setBackground(Settings.DEFAULT_STATE_COLOR);
+
+				}
+				
+				panel.toggleSelectionMode();
+			}	
+		});
 		
 		JPanel editorRibbon = new JPanel();
 		editorRibbon.setBounds(806, 11, 621, 113);
@@ -430,7 +438,14 @@ public class MainFrame extends CustomJFrame {
 		scrollPane.setBackground(Color.DARK_GRAY);
 		getContentPane().add(scrollPane);
 	
-
+		filesBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//importBtn.setButtonReleased(true);
+				importBtn.setBackground(Settings.DEFAULT_STATE_COLOR);
+			}
+		});
 		
 		btnAddLayer.addActionListener(new ActionListener() {
 
@@ -470,6 +485,7 @@ public class MainFrame extends CustomJFrame {
 		});
 		
 		btnDrawEdit.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				handleEditingSession(e, btnDrawEdit, "new");
@@ -548,10 +564,7 @@ public class MainFrame extends CustomJFrame {
 			
 			// If layer list is empty
 			// Disable all draw buttons
-			for (Enumeration<AbstractButton> buttons = drawButtonGroup.getElements(); buttons.hasMoreElements();) {
-				DrawIconButton button = (DrawIconButton) buttons.nextElement();
-				button.setEnabled(false);
-			}
+			 disableAllDrawButtons();
 			
 			// Disable the edit start button
 			btnDrawEdit.setButtonReleased(false);
@@ -561,10 +574,21 @@ public class MainFrame extends CustomJFrame {
 			
 	}
 
+	public static void disableAllDrawButtons() {
+		
+		for (Enumeration<AbstractButton> buttons = drawButtonGroup.getElements(); buttons.hasMoreElements();) {
+			DrawIconButton button = (DrawIconButton) buttons.nextElement();
+			button.setEnabled(false);
+		}
+	}
+
 	/**
 	 * 
 	 */
 	protected void handleAddNewLayerIntent() {
+		
+		// 0. Disable query mode
+		panel.disableQueryMode();
 		
 		// 1. Create list of possible geometry
 		// -----------------------------------
@@ -612,21 +636,6 @@ public class MainFrame extends CustomJFrame {
 	}
 	
 	
-	private void createNewLayer(String layerType, String layerName) {
-		
-		// 1. Create a new layer
-		Layer newLayer = new Layer(TableOfContents.getNewLayerID(), true, layerType, layerName );
-		
-		// 2. Add to the table of content
-		tableOfContents.addRowLayer(newLayer);
-		
-		// 3. Log some message
-		String message = "New " + newLayer.getLayerType() + " layer: "+ newLayer.getLayerName() + " was created";
-		log(message);
-		panel.showAnimatedHint(message, Settings.DEFAULT_STATE_COLOR);
-	
-	}
-
 	/**
 	 * Handles when the user wants to start editing session <br>
 	 * Checks if there are no layer on the table of contents first then
@@ -641,10 +650,10 @@ public class MainFrame extends CustomJFrame {
 			
 	
 			String selectedFeatureType = getCurrentFeatureType();
-			panel.toggleEditStart(layerListComboBox.getSelectedIndex(), selectedFeatureType,  signal);
+			panel.toggleEditSession(layerListComboBox.getSelectedIndex(), selectedFeatureType,  signal);
 			
 			log("Edit session started on " + DrawingJPanel.currentLayer.getLayerName());
-
+	
 		} else {
 			
 			log("Drawing was attempted but no layer to edit on the list");
@@ -654,18 +663,6 @@ public class MainFrame extends CustomJFrame {
 			// Release the button from pressed state
 			btnDrawEdit.setButtonReleased(true);
 		}
-	}
-
-	public static String getCurrentFeatureType() {
-		
-		if(drawButtonGroup.getSelection() != null) {
-			
-			String selectedFeatureType = drawButtonGroup.getSelection().getActionCommand();
-		
-			return selectedFeatureType;
-		} else
-			
-			return null;
 	}
 
 	/**
@@ -698,7 +695,7 @@ public class MainFrame extends CustomJFrame {
 	        	   if(response == JOptionPane.YES_OPTION) {
 	        		   
 	        		   // Save the items to the database!
-
+	
 	        	   } else if(response == JOptionPane.NO_OPTION) {
 	        		   
 	        		   // Reload previous saved item from DB
@@ -707,7 +704,7 @@ public class MainFrame extends CustomJFrame {
 	        		   layer.getListOfFeatures().clear();
 	        		   
 	        		   panel.repaint();
-
+	
 	        	   };
 	        	   
 	        	   layer.setNotSaved(false);
@@ -720,7 +717,7 @@ public class MainFrame extends CustomJFrame {
 		           int toLayerIndex = layerListComboBox.getSelectedIndex();
 		           
 		           String currentFeature = getCurrentFeatureType();
-		           panel.toggleEditStart(toLayerIndex, currentFeature, "continue");
+		           panel.toggleEditSession(toLayerIndex, currentFeature, "continue");
 				
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -737,9 +734,67 @@ public class MainFrame extends CustomJFrame {
 		dispose();
 		System.exit(0);
 	}
+
+	private void connectToDatabase() {
+		
+		String host = (Settings.dbHost.getText());
+		int port = Integer.parseInt((Settings.dbPort.getText()));
+		String database = (Settings.dbName.getText());
+		String user = Settings.dbUsername.getText();
+		String password = String.valueOf(Settings.dbPassword.getPassword());
+		
+		try {
+			
+			dbConnection = new DatabaseConnection(host, port, database, user, password);
+			
+			initialize();
+			log("Application started. GMCM3 Software Engineering HSKA Karlsruhe "
+					+ "https://github.com/enocholumide/GMCM3_Software_Eng.git "
+					+ "\t Database connected");
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			
+			
+			Toolkit.getDefaultToolkit().beep();
+			JOptionPane.showMessageDialog( null, "Database connection cannot be established \n\n"
+					+ e.getMessage() + "\n\n Remind me later?", "Database connection error", JOptionPane.ERROR_MESSAGE);
+			
+			initialize();
+			log("Application started. GMCM3 Software Engineering HSKA Karlsruhe "
+					+ "https://github.com/enocholumide/GMCM3_Software_Eng.git "
+					+ "\t Database NOT CONNECTED!!!");		
+		}
+	}
+
+	private void createNewLayer(String layerType, String layerName) {
+		
+		// 1. Create a new layer
+		Layer newLayer = new Layer(TableOfContents.getNewLayerID(), true, layerType, layerName );
+		
+		// 2. Add to the table of content
+		tableOfContents.addRowLayer(newLayer);
+		
+		// 3. Log some message
+		String message = "New " + newLayer.getLayerType() + " layer: "+ newLayer.getLayerName() + " was created";
+		log(message);
+		panel.showAnimatedHint(message, Settings.DEFAULT_STATE_COLOR);
 	
+	}
+
+	public static String getCurrentFeatureType() {
+		
+		if(drawButtonGroup.getSelection() != null) {
+			
+			String selectedFeatureType = drawButtonGroup.getSelection().getActionCommand();
+		
+			return selectedFeatureType;
+		} else
+			
+			return null;
+	}
+
 	/**
-	 * Logs messages on the frame
+	 * Logs messages on the frame with simple animation
 	 * @param string message to log
 	 */
 	public static void log(String string) {
@@ -784,5 +839,31 @@ public class MainFrame extends CustomJFrame {
 		
 		model = new DefaultComboBoxModel( listOfLayersInString );
 		MainFrame.layerListComboBox.setModel( model );
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 */
+	public static void releaseAllOtherToolsButton(String name) {
+		
+		// 1. Loop through all the buttons in the draw button group
+		// ----------------------------------------------------------
+		for (Enumeration<AbstractButton> buttons = toolsButtonGroup.getElements(); buttons.hasMoreElements();) {
+            
+			ToolIconButton button = (ToolIconButton) buttons.nextElement();
+			
+			// a. Get the layer type of the button
+			// TODO validate constructing a draw button later!
+			
+			// b. Check if the draw button can be drawn on the current layer type
+			if(!(name.equals(button.getActionCommand()))) {
+				
+				button.setButtonReleased(true);
+				button.setSelected(false);
+				button.setBackground(Settings.DEFAULT_STATE_COLOR);
+				
+			}
+        }
 	}
 }

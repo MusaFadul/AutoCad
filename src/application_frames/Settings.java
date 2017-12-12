@@ -380,6 +380,7 @@ public class Settings extends JFrame {
 	public static Color defaultColor = Color.BLACK;
 	public static double mouseOffset = 20;
 	public static boolean DRAW_GUIDES_AND_TIPS = true;
+	public static Color DEFAULT_SELECTION_COLOR = new Color (135, 234, 105);
 
 	// GUI parameters
 	public static final ImageIcon LAYER_DELETE_ICON = Tools.getIconImage("/images/bin.png", 15, 15);

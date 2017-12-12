@@ -25,10 +25,11 @@ public class ToolIconButton extends JButton {
 
 	public ToolIconButton(String text, String iconPath, int x, int y) {
 		
-		super(text);
+		super();
 		setBackground(Settings.DEFAULT_STATE_COLOR);
 		setBorderPainted(false);
 		setFocusPainted(false);
+		setActionCommand(text);
 		setIcon(Tools.getIconImage(iconPath, x,y));
 		setText(null);
 		
@@ -36,12 +37,18 @@ public class ToolIconButton extends JButton {
 		addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				if(buttonReleased) {
-					buttonReleased = false;
-				} else
-					buttonReleased = true;
+			public void actionPerformed(ActionEvent e) {
+				
+				if (getActionCommand().equals("Editing") || 
+						getActionCommand().equals("Query")) {
+					
+					if (buttonReleased) {
+						buttonReleased = false;
+					} else {
+						buttonReleased = true;
+					} 
+				}
+					
 			}
 			
 		});

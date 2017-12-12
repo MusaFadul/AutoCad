@@ -46,7 +46,8 @@ public class Feature {
     }
 
 	/**
-	 * @return the vertices
+	 * The vertices are used for rendering, and they are all rectangle 2D <br>
+	 * @return the vertices as a list of rectangle 2d
 	 */
 	public List<Rectangle2D> getVertices() {
 		return vertices;
