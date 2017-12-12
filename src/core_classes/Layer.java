@@ -176,9 +176,9 @@ public class Layer  {
 		this.lineWeight = lineWeight;
 	}
 
-	public void clearAllHighlightedFeatures() {
+	public void highlightAllFeatures(boolean cond) {
 		for(Feature feature : listOfFeatures) {
-			feature.setHighlighted(false);
+			feature.setHighlighted(cond);
 		}
 	}
 	
