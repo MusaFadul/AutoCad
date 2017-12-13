@@ -190,8 +190,15 @@ public class Layer  {
 			}
 		}
 		
-		return null;
-		
+		return null;	
+	}
+	
+	public int getSize() {
+		return listOfFeatures.size();
+	}
+
+	public void removeLastItem() {
+		listOfFeatures.remove(getSize()-1);
 	}
 	
 }
