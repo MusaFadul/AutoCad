@@ -40,7 +40,9 @@ public class ToolIconButton extends JButton {
 			public void actionPerformed(ActionEvent e) {
 				
 				if (getActionCommand().equals("Editing") || 
-						getActionCommand().equals("Query")) {
+					getActionCommand().equals("Query") || 
+					getActionCommand().equals("Select")
+					){
 					
 					if (buttonReleased) {
 						buttonReleased = false;

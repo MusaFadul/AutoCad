@@ -1,9 +1,9 @@
 package tester;
 
-import geometry.PointItem;
 import core_classes.Feature;
 import core_classes.Layer;
-import geometry.PolylineItem;
+import features.PointItem;
+import features.PolylineItem;
 
 import java.awt.*;
 import java.awt.geom.Line2D;

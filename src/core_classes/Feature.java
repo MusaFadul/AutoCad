@@ -199,5 +199,4 @@ public class Feature {
 	public void setVisibile(boolean isVisibile) {
 		this.isVisibile = isVisibile;
 	}
-
 }

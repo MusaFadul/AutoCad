@@ -20,10 +20,10 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import application_frames.AttributeTableFrame;
+import application_frames.MainFrame;
 import core_classes.Layer;
 import renderers.LayerRemoveButtonRenderer;
 import renderers.GeometryTableIconRenderer;
-import tester.MainFrame;
 
 /**
  * Arranges the list of current layers <br>
