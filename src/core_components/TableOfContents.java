@@ -19,7 +19,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import application_frames.AttributeTable;
+import application_frames.AttributeTableFrame;
 import core_classes.Layer;
 import renderers.LayerRemoveButtonRenderer;
 import renderers.GeometryTableIconRenderer;
@@ -138,7 +138,7 @@ public class TableOfContents extends JTable {
 				
 				System.out.println(layer.getLayerType() + " " + layer.getLayerName());
 				
-				new AttributeTable(layer).setVisible(true);
+				new AttributeTableFrame(layer).setVisible(true);
 			
 			}
 		});

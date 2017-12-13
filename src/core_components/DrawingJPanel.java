@@ -36,6 +36,7 @@ import core_classes.Layer;
 import custom_components.CustomJPanel;
 import features.GridLine;
 import features.TextItem;
+import geometry.PointItem;
 import geometry.PolygonItem;
 import tester.MainFrame;
 import toolset.Tools;
@@ -98,7 +99,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	private Shape tempShape = null;
 	
 	/**Temporary Shapes*/
-	private Rectangle2D queryBounds = null;
+	public Rectangle2D queryBounds = null;
 	
 	/**Temporary line*/
 	private List<Line2D> tempLine = new ArrayList<Line2D>();;
@@ -197,25 +198,36 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							else if (!feature.isHighlighted()) {
 								c = layer.getLayerColor();
 							}
+							
+							if(layer.getLayerType().equals(Settings.POINT_GEOMETRY)){
 								
-							if(layer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
-								// Fill the shape
-								g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 100));
-								g2d.fill(feature.getShape());
+								PointItem point = (PointItem) feature;
+								g2d.setColor(c);
+								g2d.fill(point.getShape());
+								
 							}
 							
-							// Draw outline
-							g2d.setColor(c);
-							g2d.setStroke(new BasicStroke(layer.getLineWeight()));
-							g2d.draw(feature.getShape());
+							else {
 							
-							
-							
-							// Render the shape vertices
-							for(Shape shape : feature.getVertices()) {
+								if(layer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
+									// Fill the shape
+									g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 100));
+									g2d.fill(feature.getShape());
+								}
+								
+								// Draw outline
 								g2d.setColor(c);
-								g2d.fill(shape);
-							}		
+								g2d.setStroke(new BasicStroke(layer.getLineWeight()));
+								g2d.draw(feature.getShape());
+								
+								
+								
+								// Render the shape vertices
+								for(Shape shape : feature.getVertices()) {
+									g2d.setColor(c);
+									g2d.fill(shape);
+								}
+							}
 						}
 					}
 				}
@@ -257,7 +269,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				
 				Color c = Settings.DEFAULT_SELECTION_COLOR;
 				
-				g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), Settings.TRANSPARENCY_LEVEL));
+				g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), Settings.TRANSPARENCY_LEVEL_2));
 				g2d.fill(queryBounds);
 				
 				// Draw border
@@ -272,6 +284,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			for(Rectangle2D item : this.vertexList) {
 				g2d.setColor(currentLayer.getLayerColor());
 				
+				
 				if(count == 0) {
 					g2d.setColor(Settings.DEFAULT_STATE_COLOR);
 				}
@@ -282,8 +295,10 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					}
 				}
 				
+				
 				g2d.fill(item);
 				count++;
+				
 			}
 			
 			// 5. Render the snap 
@@ -301,7 +316,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				g2d.setFont(new Font("Tw Cen MT", Font.ITALIC, 18)); 
 	            Rectangle2D rect = g2dFontMetrics.getStringBounds(tooltip.getText(), g2d); 	
 	            Color c = Settings.DEFAULT_STATE_COLOR;
-	            g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), Settings.TRANSPARENCY_LEVEL));									
+	            g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), Settings.TRANSPARENCY_LEVEL_1));									
 	            g2d.fillRect((int)tooltip.getBasePosition().getX(),
 	            		(int)tooltip.getBasePosition().getY() - g2dFontMetrics.getAscent(),
 	                       (int) rect.getWidth(),
@@ -495,29 +510,31 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	 */
 	private void setCurrentMouseGuide(TextItem guideOrTip, Color color) {
 		
-		g2d.setFont(new Font("Tw Cen MT", Font.ITALIC, 15)); 
-		FontMetrics fm = g2d.getFontMetrics();
-		Rectangle2D rect = fm.getStringBounds(guideOrTip.getText(), g2d); 
-		
-		if(guideOrTip.getBasePosition().getX() < 0) {
-			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() + Settings.mouseOffset, getMousePosition().getY()));
+		if(guideOrTip != null) {
+			
+			g2d.setFont(new Font("Tw Cen MT", Font.ITALIC, 15)); 
+			FontMetrics fm = g2d.getFontMetrics();
+			Rectangle2D rect = fm.getStringBounds(guideOrTip.getText(), g2d); 
+			
+			if(guideOrTip.getBasePosition().getX() < 0) {
+				guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() + Settings.mouseOffset, getMousePosition().getY()));
+			}
+			
+			if(guideOrTip.getBasePosition().getX() + rect.getWidth() > getWidth()) {
+				guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() - Settings.mouseOffset - rect.getWidth(), getMousePosition().getY()));
+			}
+			
+			int padding = Settings.TOOL_TIP_PADDING;
+			g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), Settings.TRANSPARENCY_LEVEL_1));
+			
+			RoundRectangle2D roundedRect = getRoundedFrameRectForText(guideOrTip, fm, padding);
+			guideOrTip.setBorderRectangleInPanel(roundedRect);
+			
+			g2d.fill(roundedRect);
+			
+			g2d.setColor(Color.WHITE);							
+			g2d.drawString(guideOrTip.getText(), (int) (int)guideOrTip.getBasePosition().getX() + padding/2, (int)guideOrTip.getBasePosition().getY()- padding/2);
 		}
-		
-		if(guideOrTip.getBasePosition().getX() + rect.getWidth() > getWidth()) {
-			guideOrTip.setBasePosition(new Point2D.Double(getMousePosition().getX() - Settings.mouseOffset - rect.getWidth(), getMousePosition().getY()));
-		}
-		
-		int padding = Settings.TOOL_TIP_PADDING;
-		g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), Settings.TRANSPARENCY_LEVEL));
-		
-		RoundRectangle2D roundedRect = getRoundedFrameRectForText(guideOrTip, fm, padding);
-		guideOrTip.setBorderRectangleInPanel(roundedRect);
-		
-		g2d.fill(roundedRect);
-		
-		g2d.setColor(Color.WHITE);							
-		g2d.drawString(guideOrTip.getText(), (int) (int)guideOrTip.getBasePosition().getX() + padding/2, (int)guideOrTip.getBasePosition().getY()- padding/2);
-		
 	}
 	
 	/**
@@ -720,22 +737,26 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					
 					// 2.2 Test if the mouse is on it
 					// ------------------------------------------------
-					if( firstVertex.contains(e.getPoint()) || lastVertex.contains(e.getPoint()) ) {
+					if( firstVertex.contains(e.getPoint())) {
 						
 						// 2.3 Show some tips
 						// ------------------------------------------------
 						this.currentMouseTipText  = Settings.CLOSE_POLYLINE_MESSAGE;
-						//this.tooltip = new TextItem(e.getPoint(), Settings.CLOSE_POLYLINE_MESSAGE);
-						repaint();
 						
 					} 
+					else if ( lastVertex.contains(e.getPoint()) ) {
+						
+						this.currentMouseTipText  = Settings.FINISH_POLYLINE_MESSAGE;
+					} 
 					else {
+						
 						// 2.4 Erase the snap and the tool tip if mouse goes away
 						// ------------------------------------------------------
 						//this.snapPoint = null; <- Not neccessary to erase the snap point!
-						this.tooltip = null;
-						repaint();
+						this.tooltip = null;	
 					}
+					
+					repaint();
 				}
 			}
 		}
@@ -935,50 +956,84 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 			repaint();
 		}
 		
+		if(currentLayer.getLayerType().equals(Settings.POINT_GEOMETRY)) {
+			
+			currentLayer.removeLastItem();
+		}
+		
 	}
 
 	/**
 	 * Higlights features that are interseced by the query region
 	 * @param e Mouse event at mouse realeased
-	 * @param queryBounds2
+	 * @param queryBounds bounds of the rectangle
 	 */
 	private void highlightIntersectedFeatures( Rectangle2D queryBounds ) {
 		
+		// 1. Loop through all layer at the table of contents
 		for(Layer layer : TableOfContents.layerList) {
-			
+			// 2. Consider only layers that are visibile 
 			if(layer.isVisible()) {
-				
+				// 3. Loop through all features in a layer
 				for(Feature feature : layer.getListOfFeatures()) {
-					
+					// 4. Consider only features that are visible
 					if(feature.isVisibile()) {
-						
-						Area areaA = new Area(queryBounds);	
+						// 4.1 Make an area of the query bounds
+						Area areaA = new Area(queryBounds);
+						// 4.2 Get the shape of the feature
+						//     and intersects it with the feature area object
+						//     just created
 						areaA.intersect(new Area(feature.getShape()));
 						
+						// 4.3 If the area is not empty,
+						//     That means there is an intersect
 						if(!areaA.isEmpty()) {
+							// Therefore highlight the feature
 							feature.setHighlighted(true);
-						} else {
-							
+							// However, there will be a problem for point and line objects
+							// Even if there are intersection, it (may) not find it
+						} 
+						// 4.4 Let us test for polyline and points
+						else {
 							boolean stillDoNotContain = true;
-							
+							// 4.4.1 For polyline
 							if(layer.getLayerType().equals(Settings.POLYLINE_GEOMETRY)) {
-								
+								// Loop through all the vertices
 								for(Rectangle2D rec : feature.getVertices()) {
-									
+									// Create a point
 									Point2D point = new Point2D.Double(rec.getCenterX(), rec.getCenterY());
-									Area areaB = new Area(queryBounds);
-									if(areaB.contains(point)) {
-	
+									// Test for the intersection of one point
+									if(queryBounds.contains(point)) {
+										// If it contains, that means there is an 
+										// intersection , then highlight the feature
 										feature.setHighlighted(true);
 										stillDoNotContain = false;
+										// stop searching!, we got what we wanted already
 										break;
 									}
 								}
 							} 
+							// 4.4.2 For point
+							if (layer.getLayerType().equals(Settings.POINT_GEOMETRY)) {
+								
+								// Since we know the item is a point already :)
+								// We can cast it to a point item , 
+								// we need the getGeom method in the class
+								PointItem point = (PointItem) feature;
+								// Test for intersection
+								if(queryBounds.contains(point.getGeometry())) {
+									feature.setHighlighted(true);
+									// turn of the clause
+									stillDoNotContain = false;
+								}
+							}
+							// If after all the test, and the feature is still not 
+							// within the query box, then no need to highlight
 							if(stillDoNotContain) {
 								feature.setHighlighted(false);
 							}
 						}
+						
 						repaint();
 					}
 				}
@@ -1250,7 +1305,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	 * Cleans up the drawing. 
 	 * Panel repainted authomatically.
 	 */
-	private void cleanUpDrawing() {
+	public void cleanUpDrawing() {
 		
 		// Clear the vertex list for new polygon
 		this.vertexList.clear();
@@ -1274,8 +1329,6 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		
 		// Draw guides
 		this.drawGuide = null;
-		
-		this.queryBounds = null;
 		
 		for(Layer layer : TableOfContents.layerList) {
 			layer.highlightAllFeatures(false);
@@ -1406,12 +1459,31 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 					
 					handleDrawUndoIntent();
 				}
+				
+				//------------------------------------------------------------------------
+				
+				//                   Protocol for drawing point
+				
+				//------------------------------------------------------------------------
+				
+				else if(currentLayer.getLayerType().equals(Settings.POINT_GEOMETRY)) {
+					
+					Feature point  = new PointItem(currentLayer.getNextFeatureID(), clickedPoint);
+					point.setFeatureType(Settings.POINT_GEOMETRY);
+					point.setLayerID(currentLayer.getId());
+					point.setShape(new Ellipse2D.Double(clickedPoint.getX() - Settings.POINT_SIZE/2,
+							clickedPoint.getY() - Settings.POINT_SIZE/2,
+							Settings.POINT_SIZE, Settings.POINT_SIZE));
+					currentLayer.getListOfFeatures().add(point);
+					repaint();
+				}
+				
 				//------------------------------------------------------------------------
 				
 				//                   Protocol for drawing polygon
 				
 				//------------------------------------------------------------------------
-				if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
+				else if(currentLayer.getLayerType().equals(Settings.POLYGON_GEOMETRY)) {
 					
 					
 					if(!SwingUtilities.isRightMouseButton(e)) {
@@ -1680,14 +1752,14 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 				//-----------------------------------------------------------------------
 				else if(currentLayer.getLayerType().equals(Settings.POLYLINE_GEOMETRY)) {
 					
-					// 1. Create a vertex for the new point using the current snap size ( see Settings )
+					// 0. Create a vertex for the new point using the current snap size ( see Settings )
 					// ---------------------------------------------------------------------------------
 					
-					// 2. Current size of the drawn vertex
+					// 1. Current size of the drawn vertex
 					// ------------------------------------
 					int size = vertexList.size();
 					
-					// 3. For first two points drawn ...
+					// 2. For first two points drawn ...
 					// ----------------------------------
 					if(this.vertexList.size() < 2) {
 						
@@ -1725,8 +1797,23 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						
 						// 4.2 Check if there is a click or double click on the first and last vertex then close the line
 						// -----------------------------------------------------------------------------------------------
-						if( (firstVertex.contains(clickedPoint) || lastVertex.contains(clickedPoint)) || e.getClickCount() > 1) {
+						if( (firstVertex.contains(clickedPoint) && e.getClickCount() > 1) ) {
 							closed = true;
+							
+							// 4.3 Finish up the line and create a new feature
+							finishPath(this.vertexList);
+							
+							// 4.3 Log some message and update
+							onFeatureCreated("Polyline feature created");
+							
+						}
+						
+						if( (lastVertex.contains(clickedPoint)) && e.getClickCount() > 1){
+							
+							closed = true;
+							
+							vertexList.add(vertex);
+							this.globalDrawingSnapPoints.add(vertex);
 							
 							// 4.3 Finish up the line and create a new feature
 							finishPath(this.vertexList);
@@ -1790,9 +1877,10 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseExited(MouseEvent e) {
 		
+		this.movingMouseTip = null;
+		repaint();
 	}
 
 	@Override

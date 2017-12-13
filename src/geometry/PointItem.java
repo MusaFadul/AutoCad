@@ -1,6 +1,6 @@
 package geometry;
 import core_classes.Feature;
-import java.awt.Point;
+import java.awt.geom.Point2D;
 
 /**
  * @author Isaac
@@ -8,14 +8,14 @@ import java.awt.Point;
  */
 public class PointItem extends Feature {
     
-    Point geometry;
+    private Point2D geometry;
 
     /**
      * Constructor for PointItem feature.
      * @param id Id for this feature
      * @param point Geometry for this feature, in the form of a Point object.
      */
-    public PointItem(int id, Point point) {
+    public PointItem(int id, Point2D point) {
 
         super(id);
         this.geometry = point;
@@ -26,7 +26,7 @@ public class PointItem extends Feature {
      * Getter method for the PointItem's geometry object.
      * @return Point
      */
-    public Point getGeometry() {
+    public Point2D getGeometry() {
         return this.geometry;
     }
 
@@ -34,9 +34,10 @@ public class PointItem extends Feature {
      * Setter method for the PointItem's geometry object.
      * @param point Point object to set as the PointItem's geomtetry.
      */
-    public void setGeometry(Point point) {
+    public void setGeometry(Point2D point) {
         this.geometry = point;
     }
+    
 
     /**
      * Getter method that returns the geometry in a standardized pair of arrays format for storage in the DB.
@@ -47,5 +48,4 @@ public class PointItem extends Feature {
         double[] y = new double[] {this.geometry.getY()};
         return new double[][] {x, y};
     }
-
 }
