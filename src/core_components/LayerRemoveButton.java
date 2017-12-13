@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import tester.MainFrame;
+import application_frames.MainFrame;
 import application_frames.Settings;
 
 /**

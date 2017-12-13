@@ -8,7 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.MetalToggleButtonUI;
 
-import tester.MainFrame;
+import application_frames.MainFrame;
 import application_frames.Settings;
 import toolset.Tools;
 

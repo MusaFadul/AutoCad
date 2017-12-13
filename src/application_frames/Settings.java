@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
-import core_classes.DatabaseConnection;
+import database.DatabaseConnection;
 import toolset.Tools;
 
 import java.awt.Color;

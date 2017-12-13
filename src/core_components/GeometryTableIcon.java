@@ -9,8 +9,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
+import application_frames.MainFrame;
 import core_classes.Layer;
-import tester.MainFrame;
 
 public class GeometryTableIcon extends JPanel {
 	

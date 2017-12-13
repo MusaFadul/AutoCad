@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.ImageIcon;
 
-import tester.MainFrame;
+import application_frames.MainFrame;
 
 public class Tools {
 	
@@ -126,6 +126,7 @@ public class Tools {
         }
         return result;
     }
+	
     private static boolean isExists(int[] array, int value){
         for (int i : array) {
             if(i==value)

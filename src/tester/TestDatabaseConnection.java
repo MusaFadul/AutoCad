@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import core_classes.DatabaseConnection;
 import core_classes.Layer;
-import geometry.PolygonItem;
-import geometry.PolylineItem;
+import database.DatabaseConnection;
+import features.PolygonItem;
+import features.PolylineItem;
 
 /**
  * Created by isaac on 22/11/17.
