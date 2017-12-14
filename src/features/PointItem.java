@@ -1,7 +1,6 @@
 package features;
 import core_classes.Feature;
 
-import java.awt.Shape;
 import java.awt.geom.Point2D;
 
 /**
