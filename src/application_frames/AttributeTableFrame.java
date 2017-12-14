@@ -1,7 +1,6 @@
 package application_frames;
 
 import java.awt.Color;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -12,6 +11,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import core_classes.Feature;
 import core_classes.Layer;
+import custom_components.CustomJFrame;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -34,7 +34,7 @@ import java.util.List;
  * @author OlumideEnoch
  *
  */
-public class AttributeTableFrame extends JFrame implements ActionListener {
+public class AttributeTableFrame extends CustomJFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 2510826749504059745L;
 	
@@ -56,9 +56,8 @@ public class AttributeTableFrame extends JFrame implements ActionListener {
 	 * @param features 
 	 */
 	public AttributeTableFrame(Layer layer) {
-		
+		super("Atrribute table");
 		this.layer = layer;
-		
 		addWindowListener(new WindowAdapter() {
 			@Override 
 			public void windowClosing(WindowEvent e) { 

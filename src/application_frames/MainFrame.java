@@ -382,9 +382,20 @@ public class MainFrame extends CustomJFrame {
 		configureRibbon.setBackground(Color.WHITE);
 		getContentPane().add(configureRibbon);
 		
-		ToolIconButton toolIconButton_4 = new ToolIconButton("Database", "/images/database.png", 60, 60);
-		toolIconButton_4.setBounds(13, 22, 90, 75);
-		configureRibbon.add(toolIconButton_4);
+		ToolIconButton databseButton = new ToolIconButton("Database", "/images/database.png", 60, 60);
+		databseButton.setBounds(13, 22, 90, 75);
+		configureRibbon.add(databseButton);
+		
+		databseButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+
+				new DatabaseCatalog().setVisible(true);
+				
+			}
+		});
 		
 		ToolIconButton settingsButton = new ToolIconButton("Settings", "/images/settings.png", 60, 60);
 		settingsButton.setBounds(113, 22, 90, 75);
@@ -646,6 +657,7 @@ public class MainFrame extends CustomJFrame {
 		JComboBox<String> geomList = new JComboBox<String>(geom);
 		
 	    // a. Create a Jpanel and set the layout
+		
 	    JPanel layerPanel = new JPanel();
 	    layerPanel.setLayout(new GridLayout(4,1));
 	  
@@ -680,8 +692,7 @@ public class MainFrame extends CustomJFrame {
 				
 				createNewLayer(geomList.getSelectedItem().toString(), layerName);
 				
-			} else
-				JOptionPane.showOptionDialog(null, "Only Polygon and Polyline and Point supported for now", "WORK IN PROGRESS", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+			}
 		}
 	}
 	
@@ -745,6 +756,9 @@ public class MainFrame extends CustomJFrame {
         	   if(response == JOptionPane.YES_OPTION) {
         		   
         		   // Save the items to the database!
+        		   handleLayerSavingToDB(layer);
+   
+        		   
 
         	   } else if(response == JOptionPane.NO_OPTION) {
         		   
@@ -775,6 +789,62 @@ public class MainFrame extends CustomJFrame {
 		}
 	}
 
+	public static boolean handleLayerSavingToDB(Layer layer) {
+
+
+		try {
+			
+  		   
+ 		   // Check for name:
+		
+ 		   boolean layerDoesNotExist = true;
+ 		   for(String existingTable : dbConnection.getTables()) {
+ 			   if(existingTable.equals(layer.getLayerName())) {
+ 				  layerDoesNotExist = false;
+ 				  break;
+ 			   }
+ 		   }
+ 		   
+ 		   if(layerDoesNotExist) {
+ 			   
+ 			   	dbConnection.writeTable(layer.getLayerName(), layer);
+				
+				panel.showAnimatedHint("Saved!", Settings.FEATURE_CREATED_COLOR);
+				log("Layer saved to DB");
+
+				return true;
+				
+ 		   } else {
+ 			   
+ 			  panel.showAnimatedHint("Layer name exists!", Settings.DEFAULT_ERROR_COLOR);
+ 			  log("Layer name exists, overwrite?");
+ 			  
+ 			  int response = JOptionPane.showConfirmDialog(null, "Overwrite/ confirm", "Confirm", JOptionPane.YES_NO_OPTION );
+ 			  
+ 			  if(response == JOptionPane.YES_OPTION) {
+ 				  
+ 				 dbConnection.writeTable(layer.getLayerName(), layer);
+ 				
+ 				 panel.showAnimatedHint("Saved!", Settings.FEATURE_CREATED_COLOR);
+ 				 log("Layer saved to DB");
+
+ 				 return true;
+ 			  }
+ 		   }
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			panel.showAnimatedHint("Something went wrong /n Cannot save to DB", Settings.DEFAULT_ERROR_COLOR);
+			log(e.getMessage());
+			
+			return false;
+		}
+		
+		return false;
+	}
+
 	/**
 	 * Closes the application appropriately
 	 * @param e Window Event
@@ -786,11 +856,11 @@ public class MainFrame extends CustomJFrame {
 
 	private void connectToDatabase() {
 		
-		String host = (Settings.dbHost.getText());
-		int port = Integer.parseInt((Settings.dbPort.getText()));
-		String database = (Settings.dbName.getText());
-		String user = Settings.dbUsername.getText();
-		String password = String.valueOf(Settings.dbPassword.getPassword());
+		String host = "localhost";
+		int port = 5432;
+		String database = "softeng_db";
+		String user = "postgres";
+		String password = "12345";
 		
 		try {
 			
