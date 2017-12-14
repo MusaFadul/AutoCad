@@ -10,25 +10,27 @@ import core_classes.Layer;
 /**
  * Created by isaac on 22/11/17.
  */
+
+/**
+ * An object representing a connection to a PostgreSQL database.  All data will be stored in a table called "geo_data".
+ * This is to prevent SQL injection.  Individual "tables" are actually just groups of features identified by the value
+ * in the "table_name_ attribute.  If the "geo_data" table does not exist, it will be created upon initialization of
+ * this object.
+ */
 public class DatabaseConnection {
-
-
-    /**
-     *
-     */
 
     private Connection conn;
 
+    /**
+     * Constructor method for a PostgreSQL database connection object.
+     * @param host String representing the host address where the database is hosted.
+     * @param port Integer representing the port number on which the database listens.
+     * @param database String representing the name of the database to which to connect.
+     * @param user String representing the username with which to connect to the database.
+     * @param password String representing the password with which to connect to the database.
+     * @throws SQLException, ClassNotFoundException
+     */
     public DatabaseConnection(String host, int port, String database, String user, String password) throws SQLException, ClassNotFoundException {
-
-        /**
-         * Constructor method for a PostgreSQL database connection object.
-         * @param host String representing the host address where the database is hosted.
-         * @param port Integer representing the port number on which the database listens.
-         * @param database String representing the name of the database to which to connect.
-         * @param user String representing the username with which to connect to the database.
-         * @param password String representing the password with which to connect to the database.
-         */
 
         String connectionString = "jdbc:postgresql://" + host + ":" + Integer.toString(port) + "/" + database;
 
@@ -42,12 +44,12 @@ public class DatabaseConnection {
 
     }
 
+    /**
+     * Retrieves the names of all tables stored in the database.
+     * @return A string ArrayList containing all the unique table names.
+     * @throws SQLException
+     */
     public ArrayList<String> getTables() throws SQLException {
-
-        /**
-         * Retrieves the names of all tables stored in the database.
-         * @return A string ArrayList containing all the unique table names.
-         */
 
         ArrayList<String> returnArrayList = new ArrayList<>();
 
@@ -62,13 +64,13 @@ public class DatabaseConnection {
 
     }
 
+    /**
+     * Retrieves the features in a specified table.
+     * @param tableName A string representing the name of the table from which to retrieve the features.
+     * @return A string array ArrayList containing all the features in the specified table.
+     * @throws SQLException
+     */
     public ResultSet readTable(String tableName) throws SQLException {
-
-        /**
-         * Retrieves the features in a specified table.
-         * @param tableName A string representing the name of the table from which to retrieve the features.
-         * @return A string array ArrayList containing all the features in the specified table.
-         */
 
             PreparedStatement selectStatement = conn.prepareStatement("SELECT id, type, is_ellipse, x, y, rx, ry FROM geo_data WHERE table_name = ?;");
             selectStatement.setString(1, tableName); // table name
@@ -78,13 +80,13 @@ public class DatabaseConnection {
 
     }
 
+    /**
+     * Creates a new table with specified features.  Overwrites the table if it already exists.
+     * @param tableName String representing the name of the table to which to save the features.
+     * @param layer Layer object to be added to the database as a table.
+     * @throws SQLException
+     */
     public void writeTable(String tableName, Layer layer) throws SQLException {
-
-        /**
-         * Creates a new table with specified features.  Overwrites the table if it already exists.
-         * @param tableName String representing the name of the table to which to save the features.
-         * @param layer Layer object to be added to the database as a table.
-         */
 
             PreparedStatement dropStatement = conn.prepareStatement("DELETE FROM geo_data WHERE table_name = ?;");
             dropStatement.setString(1, tableName);
@@ -94,13 +96,13 @@ public class DatabaseConnection {
 
     }
 
+    /**
+     * Adds new features to an existing table.
+     * @param tableName String representing the name of the table to which to save the features.
+     * @param layer Layer object to be appended to the existing table in the database
+     * @throws SQLException
+     */
     public void appendToTable(String tableName, Layer layer) throws SQLException {
-
-        /**
-         * Adds new features to an existing table.
-         * @param tableName String representing the name of the table to which to save the features.
-         * @param layer Layer object to be appended to the existing table in the database
-         */
 
         List<Feature> featureList = layer.getListOfFeatures();
         Feature feature;
@@ -152,11 +154,11 @@ public class DatabaseConnection {
 
     }
 
+    /** Drops a table from the database
+     * @param tableName String representing the name of the table to be deleted.
+     * @throws SQLException
+     */
     public void dropTable(String tableName) throws SQLException {
-
-        /** Drops a table from the database
-         * @param tableName String representing the name of the table to be deleted.
-         */
 
             PreparedStatement dropStatement = conn.prepareStatement("DELETE FROM geo_data WHERE table_name = ?;");
             dropStatement.setString(1, tableName);
