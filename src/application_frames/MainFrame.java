@@ -8,6 +8,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Array;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +48,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultCaret;
 
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
+import core_classes.Feature;
 import core_classes.Layer;
 import core_components.DrawIconButton;
 import core_components.DrawingJPanel;
@@ -52,6 +61,8 @@ import core_components.TableOfContents;
 import core_components.ToolIconButton;
 import custom_components.CustomJFrame;
 import database.DatabaseConnection;
+import features.PolygonItem;
+import features.PolylineItem;
 import toolset.Tools;
 
 
@@ -788,15 +799,18 @@ public class MainFrame extends CustomJFrame {
 			}
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param layer
+	 * @return
+	 */
 	public static boolean handleLayerSavingToDB(Layer layer) {
 
 
 		try {
-			
-  		   
+			 
  		   // Check for name:
-		
  		   boolean layerDoesNotExist = true;
  		   for(String existingTable : dbConnection.getTables()) {
  			   if(existingTable.equals(layer.getLayerName())) {
@@ -885,7 +899,7 @@ public class MainFrame extends CustomJFrame {
 		}
 	}
 
-	private void createNewLayer(String layerType, String layerName) {
+	public static void createNewLayer(String layerType, String layerName) {
 		
 		// 1. Create a new layer
 		Layer newLayer = new Layer(TableOfContents.getNewLayerID(), true, layerType, layerName );
@@ -898,6 +912,65 @@ public class MainFrame extends CustomJFrame {
 		log(message);
 		panel.showAnimatedHint(message, Settings.DEFAULT_STATE_COLOR);
 	
+	}
+
+	public static void createLayerFromResultSet(ResultSet resultSet, String layerName) {
+	
+		try {
+			
+			String layerType = "";
+			Layer newLayer = new Layer(TableOfContents.getNewLayerID(), true, "", layerName);
+
+			while (resultSet.next()) {
+				
+				boolean isEllipse = resultSet.getBoolean(3);
+				
+				layerType = resultSet.getString(2);
+				
+				Double[] aX = (Double[]) resultSet.getArray(4).getArray();
+				Double[] aY = (Double[]) resultSet.getArray(5).getArray();
+				
+				if(isEllipse) {
+					
+					double x = aX[0];
+					double y = aY[0];
+					double rx = resultSet.getDouble(6);
+					double ry = resultSet.getDouble(7);
+						
+					// Ellipse
+					Feature feature = new Feature(newLayer.getListOfFeatures().size());
+					Shape circleShape = new Ellipse2D.Double(x - rx, y - ry , rx * 2, ry * 2);
+					
+					feature.setEllipse(isEllipse, new Point2D.Double(x,y), rx, ry);
+					feature.setShape(circleShape);
+					feature.setVisibile(true);
+					newLayer.getListOfFeatures().add(feature);
+					
+				
+				} else {
+					
+					// Normal path - polygon and polyline
+					List<Rectangle2D> vertices = new ArrayList<Rectangle2D>();
+
+					for(int i = 0; i < Math.min(aX.length, aY.length); i++) {
+						vertices.add(new Rectangle2D.Double(aX[i] - (Settings.snappingTolerance / 2), aY[i] - (Settings.snappingTolerance / 2),
+								Settings.snappingTolerance, Settings.snappingTolerance));
+					}
+
+					newLayer.setLayerType(layerType); // ! important
+					
+					panel.finishPath(vertices, newLayer);
+
+				}		
+			}
+			
+			newLayer.setNotSaved(false);
+			tableOfContents.addRowLayer(newLayer);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static String getCurrentFeatureType() {

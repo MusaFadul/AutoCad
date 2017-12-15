@@ -116,7 +116,7 @@ public class TableOfContents extends JTable {
 	/**
 	 * Attaches popup menu to the table
 	 */
-	private void setPopUpMenu() {
+	public void setPopUpMenu() {
 		
 		
 		menu = new JPopupMenu();
@@ -131,8 +131,6 @@ public class TableOfContents extends JTable {
 				JPopupMenu popup = (JPopupMenu) c.getParent();
 				JTable table = (JTable) popup.getInvoker();
 				int layerID = (int) (table.getValueAt(table.getSelectedRow(), LAYER_ID_COL_INDEX));
-				
-				System.out.println(layerID);
 				
 				Layer layer = findLayerWithID(layerID);
 				
@@ -223,8 +221,8 @@ public class TableOfContents extends JTable {
 		Object[][] data = { };
 		
 		tableModel = new DefaultTableModel(data, columnNames);
+		
         setModel(tableModel);
-
 	}
 	
 	/**
@@ -312,7 +310,7 @@ public class TableOfContents extends JTable {
 	 */
 	public static void removeRowLayer(int row) {
 		
-		String message ="";
+		String message = "";
 		
 		// Get the ID of the layer with the layer id column index
 		int id = (int) tableModel.getValueAt(row, LAYER_ID_COL_INDEX);
@@ -354,15 +352,12 @@ public class TableOfContents extends JTable {
 		MainFrame.log(message);
 	}
 	
-	/**
-	 * Expose the table model for modification outside the class
-	 * @return the table of contents table model 
-	 */
-	public DefaultTableModel getTableModel() {
-		
-		return tableModel;
-	}
 	
+	/**
+	 * Gets the list of layer names in the table of contents as an array list of string.<p>
+	 * The list is created as needed from the available list of layers
+	 * @return string array of the avaliable layer names
+	 */
 	public static String[] getListOfLayersInString() {
 		
 		String[] layerNames = new String[layerList.size()];
@@ -373,42 +368,5 @@ public class TableOfContents extends JTable {
 		}
 		
 		return layerNames;
-		
 	}
 }
-
-class PopClickListener extends MouseAdapter {
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mousePressed(e);
-		if(SwingUtilities.isRightMouseButton(e)) {
-			doPop(e);
-		}
-		
-	}
-	private void doPop(MouseEvent e) {
-		
-	}
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mouseReleased(e);
-		System.out.println("Mouse mmoved");
-	}
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mouseEntered(e);
-		System.out.println("Mouse mmoved");
-	}
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mouseMoved(e);
-		
-		System.out.println("Mouse mmoved");
-	}
-}
-
-

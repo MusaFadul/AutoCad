@@ -1136,7 +1136,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 	 * Creates a new feature in the current layer<br>
 	 * @param pointList pointList current list of points, should be more than 3!
 	 */
-	private void finishPath(List<Rectangle2D> pointList) {
+	public Path2D finishPath(List<Rectangle2D> pointList, Layer currentLayer) {
 		
 		// Construct a new (open) path
 		Path2D path = new Path2D.Double();
@@ -1187,6 +1187,8 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 		}
 		
 		repaint();
+		
+		return path;
 	}
 	
 	/**
@@ -1538,7 +1540,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							// Create new feature in current layer and set all attributes
 							Feature ellipse = new Feature(currentLayer.getNextFeatureID());
 							ellipse.setLayerID(currentLayer.getId());
-							ellipse.setEllipse(true, diamX / 2, diamY / 2);
+							ellipse.setEllipse(true, new Point2D.Double(centerX, centerY), diamX / 2, diamY / 2);
 							ellipse.setShape(shape);
 							ellipse.setFeatureType("Ellipse");
 							ellipse.setVertices(vertexList);
@@ -1585,7 +1587,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							if(this.vertexList.get(0).getCenterX() == clickedPoint.getX() && this.vertexList.get(0).getCenterY() == clickedPoint.getY()) {
 								
 								// 4.3.1 Close the polygon and create a new feature
-								finishPath(this.vertexList);
+								finishPath(this.vertexList, currentLayer);
 								
 								onFeatureCreated("Polygon feature created, click to save your edits");
 								
@@ -1699,7 +1701,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							circle.setLayerID(currentLayer.getId());
 							circle.setVertices(vertexList);
 							circle.setFeatureType("Circle");
-							circle.setEllipse(true, radius, radius);
+							circle.setEllipse(true, centerPoint, radius, radius);
 							circle.setShape(circleShape);
 							
 							// 3.4 Add the to current layer list of features
@@ -1735,7 +1737,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 							this.vertexList.add(vertex);
 							
 							
-							finishPath(this.vertexList);
+							finishPath(this.vertexList, currentLayer);
 							
 							// 3.5 Log some messages
 							onFeatureCreated("Triangle created");
@@ -1797,7 +1799,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						closed = true;
 						
 						// 4.3 Finish up the line and create a new feature
-						finishPath(this.vertexList);
+						finishPath(this.vertexList, currentLayer);
 						
 						// 4.3 Log some message and update
 						onFeatureCreated("Polyline feature created");
@@ -1809,7 +1811,7 @@ public class DrawingJPanel extends CustomJPanel implements MouseMotionListener, 
 						closed = true;
 						
 						// 4.3 Finish up the line and create a new feature
-						finishPath(this.vertexList);
+						finishPath(this.vertexList, currentLayer);
 						
 						// 4.3 Log some message and update
 						onFeatureCreated("Polyline feature created");

@@ -22,6 +22,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Color;
@@ -30,6 +31,8 @@ import java.awt.GridLayout;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Displays the connected databases, tables and the layers
@@ -48,7 +51,7 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 
 
 	private JTree dbTree = null;
-	private ToolIconButton delete, addLayer;
+	private ToolIconButton delete, addLayer, addToPanel;
 
 	/**
 	 * Create the frame.
@@ -76,7 +79,7 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 			try {
 				
 				db = new DefaultMutableTreeNode(DatabaseConnection.dbName);
-				geoTable = new DefaultMutableTreeNode("GeoTable");
+				geoTable = new DefaultMutableTreeNode("geo_data");
 				
 				for(String table : MainFrame.dbConnection.getTables()){
 					
@@ -103,6 +106,17 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 		panel.setLayout(null);
 		
 		dbTree.addTreeSelectionListener(this);
+		dbTree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				super.mousePressed(e);
+				
+				if(SwingUtilities.isRightMouseButton(e)) {
+					System.out.println("nouse pressed");
+				}
+			}
+		});
 		JScrollPane scrollPane = new JScrollPane(dbTree);
 		scrollPane.setBounds(0, 42, 274, 657);
 		panel.add(scrollPane);
@@ -116,14 +130,58 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 		panel.add(addLayer);
 		
 		delete = new ToolIconButton("Delete", "/images/delete.png", 25, 25);
-		delete.setBounds(209, 6, 30, 30);
+		delete.setBounds(164, 6, 30, 30);
 		delete.setEnabled(false);
 		panel.add(delete);
+		
+		addToPanel = new ToolIconButton("Add to panel", "/images/throw.png", 25, 25);
+		addToPanel.setEnabled(false);
+		addToPanel.setBounds(204, 6, 30, 30);
+		panel.add(addToPanel);
+		
+		addToPanel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				TreePath[] treePaths = (TreePath[]) dbTree.getSelectionPaths();
+				DefaultTreeModel model = (DefaultTreeModel) (dbTree.getModel());
+				
+				try {
+				for(TreePath tree : treePaths) {
+					
+					if(tree.getPath().length > 2) {
+
+						Object[] layerPath = tree.getPath();
+						
+						String tableName = String.valueOf(layerPath[2]);
+						
+						System.out.println(tableName);
+						//MainFrame.createNewLayer(layerType, layerName);
+						//tree.get
+						
+						DefaultMutableTreeNode newlayerNode = (DefaultMutableTreeNode) tree.getLastPathComponent();
+						System.out.println(newlayerNode.getUserObject().toString());
+						
+						//MainFrame.createNewLayer(newlayerNode.getUserObject().toString(), tableName);
+						
+						MainFrame.createLayerFromResultSet(MainFrame.dbConnection.readTable(tableName), tableName);
+						
+					}
+				}
+				
+				} catch(SQLException ee) {
+					
+				}
+			}
+		});
 		
 		JLabel infoLabel = new JLabel("Connected database(s)");
 		infoLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		infoLabel.setBounds(10, 11, 139, 20);
 		panel.add(infoLabel);
+		
+		
 		
 		addLayer.addActionListener(new ActionListener() {
 			
@@ -171,6 +229,7 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 						// 4.3 Create an empty layer
 						Layer layer = new Layer(TableOfContents.getNewLayerID(), true, geomList.getSelectedItem().toString(), layerName);
 						
+						
 						// 4.4 Proceed to add to the JTree
 						
 						// a. Get the model and the root of the JTree
@@ -179,7 +238,7 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 						
 						// b. Create a JTree node for the new layer
 						DefaultMutableTreeNode newlayerNode = new DefaultMutableTreeNode(layer.getLayerName());
-						newlayerNode.setUserObject(layer.getLayerName());
+						newlayerNode.setUserObject(layer.getLayerType());
 						
 						// c. Get the current selected path (this should be on a table name)!
 						TreePath treePath = (TreePath) dbTree.getSelectionPath();
@@ -224,7 +283,6 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 						Object[] layerPath = tree.getPath();
 						
 						String tableName = String.valueOf(layerPath[2]);
-						System.out.println(tableName);
 						
 						// On delete delete from database
 						try {
@@ -254,9 +312,11 @@ public class DatabaseCatalog extends CustomJFrame implements TreeSelectionListen
 				if(tree.getPath().length > 2) {
 	
 					delete.setEnabled(true);
+					addToPanel.setEnabled(true);
 					
 				} else {
 					delete.setEnabled(false);
+					addToPanel.setEnabled(false);
 				}
 				
 				if(tree.getPath().length == 2) {

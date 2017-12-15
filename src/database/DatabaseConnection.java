@@ -11,7 +11,12 @@ import core_classes.Layer;
  * Created by isaac on 22/11/17.
  */
 public class DatabaseConnection {
-
+	
+	public static String dbhost = "localhost";
+	public static int dbPort = 5432;
+	public static String dbName = "software_eng";
+	public static String dbUser = "postgres";
+	public static String dbPass = "12345";
 
     /**
      *
@@ -29,6 +34,13 @@ public class DatabaseConnection {
          * @param user String representing the username with which to connect to the database.
          * @param password String representing the password with which to connect to the database.
          */
+    	
+    	dbhost = host;
+    	dbPort = port;
+    	dbName = database;
+    	dbUser = user;
+    	dbPass = password;
+    	
 
         String connectionString = "jdbc:postgresql://" + host + ":" + Integer.toString(port) + "/" + database;
 
@@ -106,13 +118,14 @@ public class DatabaseConnection {
         Feature feature;
         int featureId;
         String featureType;
+        String layerType = layer.getLayerType();
         boolean isEllipse;
         double xCoords[], yCoords[];
         double xRadius = 0 , yRadius = 0;
 
         // Iterate through feature list & write each to the database
         for (int i=0; i<featureList.size(); i++) {
-
+        	
             feature = featureList.get(i);
 
             featureId = feature.getId();
@@ -127,19 +140,28 @@ public class DatabaseConnection {
                 xCoordsObject[j] = Double.toString(xCoords[j]);
                 yCoordsObject[j] = Double.toString(yCoords[j]);
             }
+            
+            if (isEllipse) {
+            	
+                xRadius = feature.getRadiusX();
+                yRadius = feature.getRadiusY();
+                
+                xCoordsObject = new Object[1];
+                xCoordsObject[0] = feature.getCenter().getX();
+                
+                yCoordsObject = new Object[1];
+                yCoordsObject[0] = feature.getCenter().getY();
+                
+            }
 
             Array myX = conn.createArrayOf("float4", xCoordsObject);
             Array myY = conn.createArrayOf("float4", yCoordsObject);
 
-            if (isEllipse) {
-                xRadius = feature.getRadiusX();
-                yRadius = feature.getRadiusY();
-            }
-
             PreparedStatement insertFeatureStatement = conn.prepareStatement("INSERT INTO geo_data (table_name, id, type, is_ellipse, x, y, rx, ry) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            
             insertFeatureStatement.setString(1, tableName);
             insertFeatureStatement.setInt(2, featureId);
-            insertFeatureStatement.setString(3, featureType);
+            insertFeatureStatement.setString(3, layerType);
             insertFeatureStatement.setBoolean(4, isEllipse);
             insertFeatureStatement.setArray(5, myX);
             insertFeatureStatement.setArray(6, myY);

@@ -70,7 +70,10 @@ public class Layer  {
 	 * @return the tableData
 	 */
 	public Object[] getTableData() {
-		return tableData;
+		
+		System.out.println(layerType);
+		
+		return new Object[] {isVisible, layerType, layerName, "", id};
 	}
 
 	/**

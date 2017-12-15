@@ -4,6 +4,7 @@
 package core_classes;
 
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Feature {
     private Shape shape;
     private List<Rectangle2D> vertices = new ArrayList<Rectangle2D> ();
     private String featureType;
+    private Point2D center;
     private boolean isEllipse = false;
     private double radiusX, radiusY;
 	private double[][] coordinatesArrayXY;
@@ -69,9 +71,18 @@ public class Feature {
 		
 		for(int i = 0; i < x.length; i++) {
 			this.vertices.add(new Rectangle2D.Double(x[i] - (snapSize/2), y[i] - (snapSize/2), snapSize, snapSize));
-		}
-		
+		}	
 	}
+	
+	public void setVerticesFromDoubleArray(double[] x, double[] y) {
+		
+		int snapSize = Settings.snappingTolerance;
+		
+		for(int i = 0; i < x.length; i++) {
+			this.vertices.add(new Rectangle2D.Double(x[i] - (snapSize/2), y[i] - (snapSize/2), snapSize, snapSize));
+		}	
+	}
+	
 
 	/**
 	 * @return the shape
@@ -111,11 +122,11 @@ public class Feature {
 	/**
 	 * @param isEllipse the isEllipse to set
 	 */
-	public void setEllipse(boolean isEllipse, double radiusX, double radiusY) {
+	public void setEllipse(boolean isEllipse, Point2D center, double radiusX, double radiusY) {
 		
 		this.radiusX = radiusX;
 		this.radiusY = radiusY;
-		
+		this.setCenter(center);
 		this.isEllipse = isEllipse;
 	}
 
@@ -198,5 +209,19 @@ public class Feature {
 	 */
 	public void setVisibile(boolean isVisibile) {
 		this.isVisibile = isVisibile;
+	}
+
+	/**
+	 * @return the center
+	 */
+	public Point2D getCenter() {
+		return center;
+	}
+
+	/**
+	 * @param center the center to set
+	 */
+	public void setCenter(Point2D center) {
+		this.center = center;
 	}
 }
