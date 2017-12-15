@@ -20,6 +20,10 @@ import core_classes.Layer;
 public class DatabaseConnection {
 
     private Connection conn;
+    public static String dbHost;
+    public static int dbPort;
+    public static String dbName;
+    public static String dbUser;
 
     /**
      * Constructor method for a PostgreSQL database connection object.
@@ -41,6 +45,11 @@ public class DatabaseConnection {
             // Create geo_data table if it doesn't already exist.
             PreparedStatement initializationStatement = conn.prepareStatement("CREATE TABLE IF NOT EXISTS geo_data (gid SERIAL PRIMARY KEY, table_name TEXT, id INTEGER, type TEXT, is_ellipse BOOLEAN, x DOUBLE PRECISION[], y DOUBLE PRECISION[], rx DOUBLE PRECISION, ry DOUBLE PRECISION);");
             initializationStatement.executeUpdate();
+
+            dbHost = host;
+            dbPort = port;
+            dbName = database;
+            dbUser = user;
 
     }
 
