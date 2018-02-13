@@ -11,19 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-
 import application_frames.AttributeTableFrame;
 import application_frames.MainFrame;
 import core_classes.Layer;
-import renderers.LayerRemoveButtonRenderer;
-import renderers.GeometryTableIconRenderer;
+import renderers_and_editors.GeometryPanelEditor;
+import renderers_and_editors.GeometryTableIconRenderer;
+import renderers_and_editors.LayerNameEditor;
+import renderers_and_editors.LayerRemoveButtonEditor;
+import renderers_and_editors.LayerRemoveButtonRenderer;
 
 /**
  * Arranges the list of current layers <br>
@@ -32,22 +34,22 @@ import renderers.GeometryTableIconRenderer;
  * Remove layer and <br>
  * Change the color of a layer.
  * 
- * TODO Conclude the listener at the first column (visibility)
- * @author OlumideEnoch
+ * @author Olumide Igbiloba
+ * @since Dec 7, 2017
+ * @version
+ * a. Dec 28, 2017 : Added functionality for changing layer name
+ * b. Dec 28, 2017 : Validate adding layer with same name on the table of contents
  *
  */
 public class TableOfContents extends JTable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**Unique layer ID in the table of contents*/
 	private static int layerID = 0;
 	
 	/**The table model that organizes the layer arrangement */
-	private static DefaultTableModel tableModel;
+	public static DefaultTableModel tableModel;
 	
 	/**The index of the layer id at the table model*/
 	public static final int LAYER_VISIBILTY_COL_INDEX = 0;
@@ -57,8 +59,6 @@ public class TableOfContents extends JTable {
 	
 	/**The index of the layer id at the table model*/
 	public static final int LAYER_ID_COL_INDEX = 4;
-	
-
 
 	/**The list of layers on the table*/
 	public static List <Layer> layerList = new ArrayList<Layer>();
@@ -99,7 +99,9 @@ public class TableOfContents extends JTable {
 			}
 		});
 		
+		
 		setComponentPopupMenu(menu);
+		
 	}
 	
 	protected void handleTableChangedListener(TableModelEvent e) {
@@ -116,7 +118,7 @@ public class TableOfContents extends JTable {
 	/**
 	 * Attaches popup menu to the table
 	 */
-	private void setPopUpMenu() {
+	public void setPopUpMenu() {
 		
 		
 		menu = new JPopupMenu();
@@ -131,8 +133,6 @@ public class TableOfContents extends JTable {
 				JPopupMenu popup = (JPopupMenu) c.getParent();
 				JTable table = (JTable) popup.getInvoker();
 				int layerID = (int) (table.getValueAt(table.getSelectedRow(), LAYER_ID_COL_INDEX));
-				
-				System.out.println(layerID);
 				
 				Layer layer = findLayerWithID(layerID);
 				
@@ -159,8 +159,8 @@ public class TableOfContents extends JTable {
 	}
 	
 	/**
-	 * 
-	 * @param e
+	 * Handles the Layer Visibility from a Click
+	 * @param e the TableModelEvent to set
 	 */
 	protected void handleLayerVisibiltyFromClick(TableModelEvent e) {
 		
@@ -185,22 +185,21 @@ public class TableOfContents extends JTable {
         
     	// Change the renderer of the second column to display shape type
 		getColumnModel().getColumn(1).setCellRenderer(new GeometryTableIconRenderer());
-        getColumnModel().getColumn(1).setCellEditor(new GeometryPanel(new JTextField()));
+        getColumnModel().getColumn(1).setCellEditor(new GeometryPanelEditor(new JTextField()));
+        
+        getColumnModel().getColumn(2).setCellEditor(new LayerNameEditor(new JTextField()));
         
         // Attach a remove button to the 4th column
         getColumnModel().getColumn(3).setCellRenderer(new LayerRemoveButtonRenderer());
-        getColumnModel().getColumn(3).setCellEditor(new LayerRemoveButton(new JTextField()));
+        getColumnModel().getColumn(3).setCellEditor(new LayerRemoveButtonEditor(new JTextField()));
         
-        // Make the 5th column invisible
-        // This contains the layer id of the layer initial row
-        getColumnModel().getColumn(4).setMinWidth(0);
-        getColumnModel().getColumn(4).setMaxWidth(0);
+        
 	}
 	
 	/**
 	 * Change the size of the table columns
 	 */
-	private void setTablePreferredSizes() {
+	public void setTablePreferredSizes() {
 		
 		// On/off column
 		getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -209,11 +208,16 @@ public class TableOfContents extends JTable {
 		
 		// General row height
         setRowHeight(50);
+        
+     // Make the 5th column invisible
+        // This contains the layer id of the layer initial row
+        getColumnModel().getColumn(4).setMinWidth(0);
+        getColumnModel().getColumn(4).setMaxWidth(0);
 		
 	}
 	
 	/**
-	 * Initializes the model of the table <br>
+	 * Initializes the model of the table. <br>
 	 * The column names are later turned off.
 	 */
 	private void setTableModel() {
@@ -223,14 +227,13 @@ public class TableOfContents extends JTable {
 		Object[][] data = { };
 		
 		tableModel = new DefaultTableModel(data, columnNames);
+		
         setModel(tableModel);
-
 	}
 	
 	/**
-	 * Sets the class of the table columns
-	 * 
-	 * @param columnIndex 
+	 * Sets the class of the table columns.
+	 * @param columnIndex the columnIndex to set
 	 */
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
@@ -244,16 +247,14 @@ public class TableOfContents extends JTable {
 	            
 	        // Showing geometry of the layer
 	        case 1: 
-	        	classType = GeometryPanel.class;
+	        	classType = GeometryPanelEditor.class;
 	        	break;
 	        	
-	        // Layer name
-	        case 2:
-	        	classType = String.class;
+	       // Skip cell 2!, use default class
 	        
 	        // Remove button
 	        case 3:
-	        	classType = LayerRemoveButton.class;
+	        	classType = LayerRemoveButtonEditor.class;
 	        	break;
 	        	
 	       // Layer ID (hidden) : width set to 0
@@ -266,25 +267,54 @@ public class TableOfContents extends JTable {
 	
 	/**
 	 * Add a new layer to table of contents
-	 * @param layer layer to add
+	 * @param layer the layer to set
+	 * @return true if operation successful
 	 */
-	public void addRowLayer(Layer layer) {
+	public boolean addRowLayer(Layer layer) {
 		
-		// Add to the layer list
-		layerList.add(layer);
+		// Validate layer
 		
-		// Add to the table 
-		tableModel.addRow(layer.getTableData());
+		if(validateLayer(layer)) {
 		
-		// Increase the layer id
-		layerID++;
-		
-		// Update the combo box model
-		MainFrame.updateLayerComboBoxModel( getListOfLayersInString() );
+			// Add to the layer list
+			layerList.add(layer);
+			
+			// Add to the table 
+			tableModel.addRow(layer.getTableData());
+			
+			// Increase the layer id
+			layerID++;
+			
+			// Update the combo box model
+			MainFrame.updateLayerComboBoxModel( getListOfLayersInString() );
+			
+			return true;
+			
+		} else {
+			MainFrame.log("Cannot add layer, layer with same name exists");
+			JOptionPane.showMessageDialog(null, "Cannot add layer, layer with same name exists", "Error adding new layer", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 	}
 	
 	/**
-	 * Returns an new layer id
+	 * Validates adding a new layer
+	 * @param layer the layer to set
+	 * @return false is layer name already exist
+	 */
+	public boolean validateLayer(Layer layer) {
+
+		for(String existingLayerNames : getListOfLayersInString()) {
+			if(existingLayerNames.equals(layer.getLayerName())) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Returns a new layer ID
 	 * @return new layer id
 	 */
 	public static int getNewLayerID() {
@@ -292,8 +322,8 @@ public class TableOfContents extends JTable {
 	}
 	
 	/**
-	 * Retrieved a layer in the table of content with a particular id
-	 * @param id id of the layer (should be retrieved at the 4th column of the table row)
+	 * Retrieves a layer in the table of content with a particular ID.
+	 * @param id ID of the layer (should be retrieved at the 4th column of the table row)
 	 * @return layer 
 	 */
 	public static Layer findLayerWithID(int id) {
@@ -307,62 +337,60 @@ public class TableOfContents extends JTable {
 	}
 	
 	/**
-	 * Removes a layer from table of contents
+	 * Removes a layer from table of contents.
 	 * @param row specified row on the table
 	 */
 	public static void removeRowLayer(int row) {
 		
-		String message ="";
+		// 0. Message to display at the end of the operation
+		String message = "";
 		
-		// Get the ID of the layer with the layer id column index
+		// 1. Get the ID of the layer with the layer id column index
 		int id = (int) tableModel.getValueAt(row, LAYER_ID_COL_INDEX);
 		
-		// Find the layer with the ID
+		// 2. Find the layer with the ID
 		Layer layer = findLayerWithID(id);
 		
-		// If a layer was found (it should be found!, unless the ID index is wrong!)
+		// 3. If a layer was found (it should be found!, unless the ID index is wrong!)
 		if(layer != null) {
 			
-			// Remove layer from the list
+			// 3.1 Remove layer from the list
 			layerList.remove(layer);
 			
-			// Refresh the table row by removing the layer
+			// 3.2 Refresh the table row by removing the layer
 			tableModel.removeRow(row);
 			
-			// Update the combo box model
+			// 3.3 Update the combo box model
 			MainFrame.updateLayerComboBoxModel( getListOfLayersInString() );
 			
-			// Change the operation message to success
+			// 3.4 Change the operation message to success
 			message = layer.getLayerName() + " removed";
 			
-			// Disable edit mode
+			// 3.5 Disable edit mode if there is no more items on the table of contents
 			if(tableModel.getRowCount() == 0) {
 				
 				MainFrame.panel.abandonEditSession();
 				MainFrame.updateDrawButtonGroup();
 			}
-			
+		
+		// 4. If not found
 		} else {
 			
-			// If not found
-			// Change the operation message to fail
+			// 4.1 Change the operation message to fail
 			
 			message = "System error, cannot find layer on list";
 		}
 		
-		// Log the message at the mainframe
+		// 5. Log the message at the mainframe
 		MainFrame.log(message);
 	}
 	
-	/**
-	 * Expose the table model for modification outside the class
-	 * @return the table of contents table model 
-	 */
-	public DefaultTableModel getTableModel() {
-		
-		return tableModel;
-	}
 	
+	/**
+	 * Gets the list of layer names in the table of contents as an array list of string.<p>
+	 * The list is created as needed from the available list of layers.
+	 * @return string array of the available layer names
+	 */
 	public static String[] getListOfLayersInString() {
 		
 		String[] layerNames = new String[layerList.size()];
@@ -373,42 +401,5 @@ public class TableOfContents extends JTable {
 		}
 		
 		return layerNames;
-		
 	}
 }
-
-class PopClickListener extends MouseAdapter {
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mousePressed(e);
-		if(SwingUtilities.isRightMouseButton(e)) {
-			doPop(e);
-		}
-		
-	}
-	private void doPop(MouseEvent e) {
-		
-	}
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mouseReleased(e);
-		System.out.println("Mouse mmoved");
-	}
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mouseEntered(e);
-		System.out.println("Mouse mmoved");
-	}
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		super.mouseMoved(e);
-		
-		System.out.println("Mouse mmoved");
-	}
-}
-
-
