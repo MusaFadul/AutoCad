@@ -109,9 +109,9 @@ public class TestDatabaseConnection {
         // TEST GET TABLES
         // =============================================================================================================
 
-        ArrayList<String> tables = databaseConnection.getTables();
+        ArrayList<String[]> tables = databaseConnection.getTables();
         for (int i=0; i<tables.size(); i++) {
-            System.out.println(tables.get(i));
+            System.out.println(tables.get(i)[0]);
         }
 
     }

@@ -4,17 +4,19 @@ import core_classes.Feature;
 import java.awt.geom.Point2D;
 
 /**
+ * Class for representing points in the system.  Inherits from Feature.
  * @author Isaac
- * Class for representing points in our system.  Inherits from Feature.
+ * @since Dec 7, 2017
+ * @version 1
  */
 public class PointItem extends Feature {
     
     private Point2D geometry;
 
     /**
-     * Constructor for PointItem feature.
-     * @param id Id for this feature
-     * @param point Geometry for this feature, in the form of a Point object.
+     * Creates a PointItem feature.
+     * @param id the Id for this feature to set
+     * @param point the point Geometry for this feature to set (in the form of a Point object)
      */
     public PointItem(int id, Point2D point) {
 
@@ -24,7 +26,7 @@ public class PointItem extends Feature {
     }
 
     /**
-     * Getter method for the PointItem's geometry object.
+     * Returns the PointItem's geometry object
      * @return Point
      */
     public Point2D getGeometry() {
@@ -32,16 +34,16 @@ public class PointItem extends Feature {
     }
 
     /**
-     * Setter method for the PointItem's geometry object.
-     * @param point Point object to set as the PointItem's geomtetry.
+     * Sets the PointItem's geometry object
+     * @param point Point object to set as the PointItem's geometry.
      */
     public void setGeometry(Point2D point) {
         this.geometry = point;
     }
 
     /**
-     * Getter method that returns the geometry in a standardized pair of arrays format for storage in the DB.
-     * @return double[][] containting an x array and a y array, in that order.
+     * Returns the geometry in a standardized pair of arrays format for storage in the DB
+     * @return double[][] containing an x array and a y array, in that order.
      */
     public double[][] getArray() {
         double[] x = new double[] {this.geometry.getX()};

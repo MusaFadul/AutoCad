@@ -12,20 +12,29 @@ import java.awt.geom.Line2D.Double;
 import java.util.ArrayList;
 
 /**
+ * Class for representing Polylines in the system.  Inherits from Feature.
  * @author Isaac
- * Class for representing polylines in our system.  Inherits from Feature.
+ * @since Dec 7, 2017
+ * @version 1
  */
 public class PolylineItem extends Feature {
 	
 	private Path2D shape;
 	private ArrayList<Line2D.Double> polyline = new ArrayList<Line2D.Double>();
 	
+	/**
+	 * Creates the PolylineItem
+	 * @param id the id to set
+	 * @param shape the shape to set
+	 */
 	public PolylineItem(int id, Path2D shape) {
 		super(id);
 		this.shape = shape;
+		super.setShape(shape);
 	}
 
 	/**
+	 * Returns the shape of the PolylineItem
 	 * @return the shape
 	 */
 	public Path2D getShape() {
@@ -33,15 +42,17 @@ public class PolylineItem extends Feature {
 	}
 
 	/**
+	 * Sets the shape of the PolylineItem
 	 * @param shape the shape to set
 	 */
 	public void setShape(Shape shape) {
 		this.shape = (Path2D) shape;
+		super.setShape(shape);
 	}
 	
 	/**
-	 * @return 
-	 * 
+	 * Returns the polyline as an ArrayList of the type double
+	 * @return polyline Returns the polyline 
 	 */
 	public ArrayList<Double> getListOfLines() {
 		
@@ -64,9 +75,9 @@ public class PolylineItem extends Feature {
     ArrayList<Line2D.Double> geometry;
 
     /**
-     * Constructor for PolylineItem feature.
-     * @param id Id for this feature
-     * @param polyline Geometry for this feature, in the form of a Line2D object.
+     * Creates the PolylineItem
+     * @param id the id for this feature to set
+     * @param polyline the Geometry for this feature to set (in the form of a Line2D object)
      */
     public PolylineItem(int id, ArrayList<Line2D.Double> polyline) {
 
@@ -76,7 +87,7 @@ public class PolylineItem extends Feature {
     }
 
     /**
-     * Getter method for the PolylineItem's geometry object.
+     * Returns the PolylineItem's geometry object
      * @return Line2D
      */
     public ArrayList<Line2D.Double> getGeometry() {
@@ -84,13 +95,17 @@ public class PolylineItem extends Feature {
     }
 
     /**
-     * Setter method for the PolylineItem's geometry object.
-     * @param polyline Line2D to set as the geometry.
+     * Sets the PolylineItem's geometry object
+     * @param polyline the Line2D to set as the geometry
      */
     public void setGeometry(ArrayList<Line2D.Double> polyline) {
         this.geometry = polyline;
     }
 
+    /**
+     * Returns the Array of the PolylineItem in the form of a double[][]
+     * @return null Returns null
+     */
 	public double[][] getArray() {
 		// TODO Auto-generated method stub
 		return null;

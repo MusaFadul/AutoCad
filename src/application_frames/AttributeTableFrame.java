@@ -23,22 +23,37 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 /**
- * Shows attribute table of all features in a layer
+ * Shows attribute table of all Features in a Layer<br>
+ * <br>
+ * It is realized with a JTable. <br>
+ * Each row in the table represents a feature in the layer<br>
+ * <br>
+ * "FID*", "ID", "Geometry", "LayerName", "LayeID"<br>
+ * <br>
+ * Features can also be selected and it can be highlighted directly on the drawing panel
+ * by setting the highlight status to true.<br>
+ * These selected features are retrieved from the layer using the feature ID<br>
+ * If a feature was selected at the drawing panel before the attribute table of the layer is opened
+ * the rows corresponding to the feature are automatically highlighted.<br>
+ * <br>
+ * Also have support for deleting the selected feature.<br>
  * 
- * WORK IN PROGRESS
+ * @author Olumide Igbiloba
+ * @since Dec 10, 2017
+ * @version 1
  * 
- * TODO: Support for showing more than one layer
- * 
- * @author OlumideEnoch
  *
  */
 public class AttributeTableFrame extends CustomJFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 2510826749504059745L;
 	
-	/**Feature ID column index on the attribute taable*/
+	/**Feature ID column index on the attribute table*/
 	protected static final int FEATURE_ID_COL_INDEX = 1;
 
 	/**Current table of the attribute table frame*/
@@ -50,10 +65,12 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 	/**Current layer of the attribute table*/
 	private Layer layer;
 	
+	private JMenu selectionMenu;
+	
 
 	/**
-	 * Create the frame.
-	 * @param features 
+	 * Creates the Attribute Table Frame
+	 * @param layer The Layer for which an Attribute Table should be created
 	 */
 	public AttributeTableFrame(Layer layer) {
 		super("Atrribute table");
@@ -67,15 +84,14 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 		
 		if(layer!=null) {
 			
-			setTableModel();
+			setTableModel(layer);
 			
 		}
 		
-
 		JPanel contentPane;
 		
 		setAlwaysOnTop(true);
-		setBounds(100, 100, 450, 783);
+		setBounds(SettingsFrame.window.getBounds().x + MainFrame.panel.getBounds().x, 100, 300, 783);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -83,24 +99,35 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 		contentPane.setBackground(SystemColor.inactiveCaption);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBackground(Color.WHITE);
-		scrollPane.setBounds(0, 0, 434, 678);
-		contentPane.add(scrollPane);
 		
 		JButton btnButton = new JButton("Close");
-		btnButton.setBounds(312, 689, 112, 23);
-		contentPane.add(btnButton);
+		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(btnButton, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE))
+				.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnButton))
+		);
+		contentPane.setLayout(gl_contentPane);
 		
 
-		JMenu selectionMenu = new JMenu("Selection");
+		selectionMenu = new JMenu("Selection");
 		selectionMenu.addSeparator();
 		
 		JMenuItem showAll = new JMenuItem("Show all features");
 		JMenuItem showSel = new JMenuItem("Show only selected features");
-		JMenuItem delete= new JMenuItem("Deleted selected features");
+		JMenuItem delete= new JMenuItem("Delete selected features");
 		JMenuItem clear = new JMenuItem("Clear selection");
 		
 		showAll.setActionCommand("showAll");
@@ -130,8 +157,9 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 	
 	/**
 	 * Sets the table model with all the features of the layer
+	 * @param layer The Layer the table model should be set for
 	 */
-	private void setTableModel() {
+	private void setTableModel(Layer layer) {
 		
 		// Column names
 		// FID* : current row number
@@ -143,7 +171,7 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 		// Empty data for now
 		Object[][] data = { };
 		
-		// Make the cell no editatble
+		// Make the cell no editable
 		table = new JTable() {
 			/**
 			 * 
@@ -165,7 +193,7 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 		setColumnPreferedWidth();
 		
 		// Add features to the table
-		addFeaturesToTable();
+		addFeaturesToTable(layer);
 		
 		// Add list selection on the table
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -179,7 +207,7 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 	}
 	
 	/**
-	 * Sets table column prefered widths
+	 * Sets table column preferred widths
 	 */
 	private void setColumnPreferedWidth() {
 		
@@ -194,25 +222,34 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 	}
 	
 	/**
-	 * Add features to the table
+	 * Add features to the table<br>
+	 * Highlights the corresponding row of already selected feature in the layer
+	 * @param layer the layer to show its features on the attribute table
 	 */
-	private void addFeaturesToTable() {
+	private void addFeaturesToTable(Layer layer) {
 		
+		// 0. Use count for to populate the FID column
 		int count = 0;
+		// 1. Compile the list of already selected features
 		List<Integer> alreadySeletedFeatures = new ArrayList<Integer>();
+		
+		// 2. Loop through the feature in the layer
 		for(Feature feature : layer.getListOfFeatures()) {
 			
+			// 2.1 Constructs the table data
 			Object[] fdata = {count, feature.getId(), layer.getLayerType(), layer.getLayerName(), layer.getId() } ;
 			tableModel.addRow(fdata);
 			
+			// 2.2 Compile the list of already selected features
 			if(feature.isHighlighted()) {
 				alreadySeletedFeatures.add(count);
 			}
 			
+			// 2.3 Increase the row number
 			count++;
 		}
 		
-		// Highlight the rows automatically
+		// 2.4 Highlight the rows automatically
 		
 		if(!alreadySeletedFeatures.isEmpty()) {
 			
@@ -224,9 +261,9 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 	}
 
 	/**
-	 * Event when rows are selected on the attibute table <br>
-	 * It highlights the features on the drawing panel
-	 * @param e
+	 * Event when rows are selected on the attribute table <br>
+	 * Highlights the Features on the drawing panel
+	 * @param e the ListSelectionEvent to set
 	 */
 	protected void handleListSelection(ListSelectionEvent e) {
 		
@@ -246,7 +283,7 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 
 	/**
 	 * Used for the items in the menu bar 
-	 * @param e
+	 * @param e the ActionEvent to set
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -273,45 +310,66 @@ public class AttributeTableFrame extends CustomJFrame implements ActionListener 
 		
 		if(command.equals("delete")) {
 			
-			int rows[] = table.getSelectedRows();
-			
-			for(@SuppressWarnings("unused") Integer i : rows) {
-				
-				// Ignoring i because getSelectedRow() returns the index of the first selected row
-				// Therefore i will not be found at next iteration
-				
-				int fid = (int) tableModel.getValueAt(table.getSelectedRow(), FEATURE_ID_COL_INDEX);
-				Feature feature = layer.getFeatureWithID(fid);
-				layer.getListOfFeatures().remove(feature);
-				tableModel.removeRow(table.getSelectedRow());
-			}
-			
-			tableModel.fireTableDataChanged();
-			layer.setNotSaved(true);
+			deleteSelectedFeatures();
 		}
 
 		if(command.equals("clear")) {
 			
-			// Clear the panel selection
-			MainFrame.panel.cleanUpDrawing();
-			
-			// Clear table selection
-			table.getSelectionModel().clearSelection();
-		    table.getColumnModel().getSelectionModel().clearSelection();
-			
-			// Clear the feature selected
-			for(Feature feature : layer.getListOfFeatures()) {
-				feature.setVisibile(true);
-				feature.setHighlighted(false);
-			}
+			clearSelectedFeatures();
 		}
 		
 		MainFrame.panel.repaint();
 	}
 	
 	/**
+	 * Deletes selected features 
+	 */
+	private void deleteSelectedFeatures() {
+		
+		int rows[] = table.getSelectedRows();
+		
+		for(@SuppressWarnings("unused") Integer i : rows) {
+			
+			// Ignoring i because getSelectedRow() returns the index of the first selected row
+			// Therefore i will not be found at next iteration
+			
+			int fid = (int) tableModel.getValueAt(table.getSelectedRow(), FEATURE_ID_COL_INDEX);
+			Feature feature = layer.getFeatureWithID(fid);
+			layer.getListOfFeatures().remove(feature);
+			tableModel.removeRow(table.getSelectedRow());
+		}
+		
+		tableModel.fireTableDataChanged();
+		layer.setNotSaved(true);
+		
+		MainFrame.panel.repaint();
+		
+	}
+
+	/**
+	 * Clears selected features 
+	 */
+	private void clearSelectedFeatures() {
+		
+		// Clear the panel selection
+		MainFrame.panel.cleanUpDrawing();
+		
+		// Clear table selection
+		table.getSelectionModel().clearSelection();
+	    table.getColumnModel().getSelectionModel().clearSelection();
+		
+		// Clear the feature selected
+		for(Feature feature : layer.getListOfFeatures()) {
+			feature.setVisibile(true);
+			feature.setHighlighted(false);
+		}
+		
+		MainFrame.panel.repaint();
+	}
+
+	/**
 	 * Closes the frame
-	 * @param e
+	 * @param e the WindowEvent to set
 	 */
 	protected void handleWindowClosingEvent(WindowEvent e) {
 		
